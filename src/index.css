@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --brand-primary: #6B1D2F;
+  --brand-primary-hover: #531523;
+  --brand-accent: #B47B2B;
+  --brand-primary-soft: rgba(107, 29, 47, 0.08);
+  --brand-accent-soft: rgba(180, 123, 43, 0.12);
+}
+
+.dark {
+  --brand-primary-soft: rgba(180, 123, 43, 0.14);
+  --brand-accent-soft: rgba(217, 159, 67, 0.16);
+}
+
+@layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', -apple-system, BlinkMacSystemFont, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  .font-display {
+    font-family: 'Fraunces', 'Noto Sans Tamil', Georgia, serif;
+  }
+
+  .font-mono-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 42s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
