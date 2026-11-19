@@ -93,7 +93,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToSite }) => {
         <div className="mt-6 pt-5 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
           <span className="inline-flex items-center gap-1.5 font-mono-num">
             <Lock className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>admin / manipay2026</span>
+            
           </span>
           <button
             type="button"
