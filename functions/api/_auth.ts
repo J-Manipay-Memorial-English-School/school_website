@@ -7,6 +7,9 @@ export interface KVNamespaceLike {
 export interface PagesEnv {
   ADMIN_PASSWORD?: string;
   SCHOOL_KV?: KVNamespaceLike;
+  CLOUDINARY_CLOUD_NAME?: string;
+  CLOUDINARY_API_KEY?: string;
+  CLOUDINARY_API_SECRET?: string;
 }
 
 export interface PagesContext {

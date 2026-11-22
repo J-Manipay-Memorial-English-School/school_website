@@ -91,7 +91,7 @@ async function startServer(): Promise<void> {
     res.status(200).json({ ok: true });
   });
 
-  app.post('/api/upload', (req, res) => {
+  app.post('/api/upload', async (req, res) => {
     const body = req.body as {
       name?: unknown;
       mimeType?: unknown;
@@ -99,10 +99,11 @@ async function startServer(): Promise<void> {
     };
 
     const name = typeof body?.name === 'string' ? body.name.trim().slice(0, 200) : 'upload';
-    const mimeType = typeof body?.mimeType === 'string' ? body.mimeType.trim() : '';
+    const rawMimeType = typeof body?.mimeType === 'string' ? body.mimeType.trim() : '';
     const dataUrl = typeof body?.dataUrl === 'string' ? body.dataUrl.trim() : '';
 
-    if (!dataUrl || !ALLOWED_DATA_URL_PREFIX.test(dataUrl)) {
+    const prefixMatch = ALLOWED_DATA_URL_PREFIX.exec(dataUrl);
+    if (!dataUrl || !prefixMatch) {
       res.status(400).json({
         error: 'Invalid file format. Only image and PDF data uploads are permitted.',
       });
@@ -114,12 +115,99 @@ async function startServer(): Promise<void> {
       return;
     }
 
-    res.status(200).json({
-      ok: true,
-      url: dataUrl,
-      name: name || 'upload',
-      mimeType: mimeType || 'application/octet-stream',
-    });
+    const detectedMimeType = prefixMatch[1].toLowerCase();
+    const resolvedMimeType = rawMimeType || detectedMimeType;
+    const isPdf = detectedMimeType === 'application/pdf';
+    const isSvg = detectedMimeType === 'image/svg+xml';
+
+    const cloudName =
+      typeof process.env.CLOUDINARY_CLOUD_NAME === 'string'
+        ? process.env.CLOUDINARY_CLOUD_NAME.trim()
+        : '';
+    const apiKey =
+      typeof process.env.CLOUDINARY_API_KEY === 'string'
+        ? process.env.CLOUDINARY_API_KEY.trim()
+        : '';
+    const apiSecret =
+      typeof process.env.CLOUDINARY_API_SECRET === 'string'
+        ? process.env.CLOUDINARY_API_SECRET.trim()
+        : '';
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      res.status(200).json({
+        ok: true,
+        url: dataUrl,
+        name: name || 'upload',
+        mimeType: resolvedMimeType,
+      });
+      return;
+    }
+
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const sanitized =
+      name
+        .replace(/\.[^/.]+$/, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 60) || 'media';
+    const uniqueSuffix = crypto.randomUUID().slice(0, 8);
+    const publicId = isPdf
+      ? `${sanitized}-${timestamp}-${uniqueSuffix}.pdf`
+      : `${sanitized}-${timestamp}-${uniqueSuffix}`;
+    const folder = 'jmmes-portal';
+    const paramsToSign = `folder=${folder}&public_id=${publicId}&timestamp=${timestamp}`;
+    const signature = crypto
+      .createHash('sha1')
+      .update(`${paramsToSign}${apiSecret}`)
+      .digest('hex');
+
+    const formData = new FormData();
+    formData.append('file', dataUrl);
+    formData.append('api_key', apiKey);
+    formData.append('timestamp', timestamp);
+    formData.append('folder', folder);
+    formData.append('public_id', publicId);
+    formData.append('signature', signature);
+
+    const resourceType = isPdf ? 'raw' : 'image';
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${encodeURIComponent(
+      cloudName
+    )}/${resourceType}/upload`;
+
+    try {
+      const cloudinaryRes = await fetch(uploadUrl, { method: 'POST', body: formData });
+      const cloudinaryBody = (await cloudinaryRes.json()) as {
+        secure_url?: unknown;
+        error?: { message?: unknown };
+      };
+      const secureUrl =
+        typeof cloudinaryBody?.secure_url === 'string' ? cloudinaryBody.secure_url : '';
+
+      if (!cloudinaryRes.ok || !secureUrl) {
+        const errMsg =
+          typeof cloudinaryBody?.error?.message === 'string' &&
+          cloudinaryBody.error.message.trim()
+            ? cloudinaryBody.error.message.trim()
+            : 'Cloudinary upload failed.';
+        res.status(502).json({ error: errMsg });
+        return;
+      }
+
+      const finalUrl =
+        !isPdf && !isSvg && secureUrl.includes('/image/upload/')
+          ? secureUrl.replace('/image/upload/', '/image/upload/f_auto,q_auto/')
+          : secureUrl;
+
+      res.status(200).json({
+        ok: true,
+        url: finalUrl,
+        name: name || 'upload',
+        mimeType: resolvedMimeType,
+      });
+    } catch {
+      res.status(502).json({ error: 'Unable to reach Cloudinary upload service.' });
+    }
   });
 
   app.delete('/api/upload', (_req, res) => {
