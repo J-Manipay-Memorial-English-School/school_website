@@ -2,15 +2,15 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { DEFAULT_SCHOOL_DATA } from '../data/defaultSchoolData';
 import { UI_STRINGS } from '../data/uiStrings';
 import {
-  authenticateAdmin,
-  checkAdminSession,
-  clearAdminSession,
   createInquiry,
   fetchInquiries,
   fetchSchoolData,
   markInquiryAsRead,
   persistSchoolData,
   resetSchoolDataToDefault,
+  UnauthorizedError,
+  uploadMediaFile,
+  verifyAdminPassword,
 } from '../services/schoolService';
 import {
   AchievementItem,
@@ -33,6 +33,7 @@ import {
   ThemeMode,
   ToastItem,
 } from '../types/school';
+import { readAttachmentFile, readImageFileAsDataUrl } from '../utils/schoolHelpers';
 
 const LANG_KEY = 'jmmes_lang_v1';
 const THEME_KEY = 'jmmes_theme_v1';
@@ -71,8 +72,15 @@ interface SchoolDataContextValue {
   showToast: (message: string, type?: ToastItem['type']) => void;
   dismissToast: (id: string) => void;
   isAdminAuthenticated: boolean;
-  loginAdmin: (username: string, password: string) => Promise<boolean>;
+  loginAdmin: (password: string) => Promise<{ ok: boolean; error?: string }>;
   logoutAdmin: () => void;
+  uploadAdminImage: (
+    file: File,
+    options?: { maxDimension?: number; quality?: number }
+  ) => Promise<string>;
+  uploadAdminAttachment: (
+    file: File
+  ) => Promise<{ name: string; mimeType: string; dataUrl: string }>;
   inquiries: InquiryMessage[];
   updateGeneralAndHero: (payload: {
     schoolLogoUrl: string;
@@ -118,8 +126,10 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [data, setData] = useState<SchoolData>(DEFAULT_SCHOOL_DATA);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [inquiries, setInquiries] = useState<InquiryMessage[]>([]);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => checkAdminSession());
+  const [adminPassword, setAdminPassword] = useState<string>('');
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+
+  const isAdminAuthenticated = adminPassword.length > 0;
 
   const [language, setLanguageState] = useState<Language>(() => {
     try {
@@ -217,11 +227,74 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setThemeModeState((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
-  const saveAndSync = useCallback(async (nextData: SchoolData) => {
-    const saved = await persistSchoolData(nextData);
-    setData(saved);
-    return saved;
-  }, []);
+  const handleProtectedApiError = useCallback(
+    (err: unknown): never => {
+      if (err instanceof UnauthorizedError) {
+        setAdminPassword('');
+        showToast(err.message, 'error');
+      } else {
+        showToast(
+          err instanceof Error ? err.message : 'Unable to save changes on the server.',
+          'error'
+        );
+      }
+      throw err;
+    },
+    [showToast]
+  );
+
+  const saveAndSync = useCallback(
+    async (nextData: SchoolData) => {
+      try {
+        const saved = await persistSchoolData(nextData, adminPassword);
+        setData(saved);
+        return saved;
+      } catch (err) {
+        return handleProtectedApiError(err);
+      }
+    },
+    [adminPassword, handleProtectedApiError]
+  );
+
+  const uploadAdminImage = useCallback(
+    async (
+      file: File,
+      options?: { maxDimension?: number; quality?: number }
+    ): Promise<string> => {
+      const dataUrl = await readImageFileAsDataUrl(file, options);
+      try {
+        const uploaded = await uploadMediaFile(
+          {
+            name: file.name,
+            mimeType: file.type || 'image/jpeg',
+            dataUrl,
+          },
+          adminPassword
+        );
+        return uploaded.url;
+      } catch (err) {
+        return handleProtectedApiError(err);
+      }
+    },
+    [adminPassword, handleProtectedApiError]
+  );
+
+  const uploadAdminAttachment = useCallback(
+    async (file: File): Promise<{ name: string; mimeType: string; dataUrl: string }> => {
+      const attachment = await readAttachmentFile(file);
+      try {
+        const uploaded = await uploadMediaFile(attachment, adminPassword);
+        return {
+          name: uploaded.name,
+          mimeType: uploaded.mimeType,
+          dataUrl: uploaded.url,
+        };
+      } catch (err) {
+        return handleProtectedApiError(err);
+      }
+    },
+    [adminPassword, handleProtectedApiError]
+  );
 
   const updateGeneralAndHero = useCallback(
     async (payload: {
@@ -489,10 +562,14 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   );
 
   const resetAllToDefaults = useCallback(async () => {
-    const fresh = await resetSchoolDataToDefault();
-    setData(fresh);
-    showToast('All CMS data reset to default school records.', 'info');
-  }, [showToast]);
+    try {
+      const fresh = await resetSchoolDataToDefault(adminPassword);
+      setData(fresh);
+      showToast('All CMS data reset to default school records.', 'info');
+    } catch (err) {
+      handleProtectedApiError(err);
+    }
+  }, [adminPassword, handleProtectedApiError, showToast]);
 
   const submitContactInquiry = useCallback(
     async (input: Omit<InquiryMessage, 'id' | 'submittedAt' | 'status'>) => {
@@ -507,17 +584,16 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setInquiries(updated);
   }, []);
 
-  const loginAdmin = useCallback(async (username: string, password: string) => {
-    const ok = await authenticateAdmin(username, password);
-    if (ok) {
-      setIsAdminAuthenticated(true);
+  const loginAdmin = useCallback(async (password: string) => {
+    const result = await verifyAdminPassword(password);
+    if (result.ok) {
+      setAdminPassword(password);
     }
-    return ok;
+    return result;
   }, []);
 
   const logoutAdmin = useCallback(() => {
-    clearAdminSession();
-    setIsAdminAuthenticated(false);
+    setAdminPassword('');
     showToast('Signed out of Admin Portal.', 'info');
   }, [showToast]);
 
@@ -539,6 +615,8 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         isAdminAuthenticated,
         loginAdmin,
         logoutAdmin,
+        uploadAdminImage,
+        uploadAdminAttachment,
         inquiries,
         updateGeneralAndHero,
         resetSchoolLogo,

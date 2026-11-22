@@ -2,12 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Edit2, FileText, Paperclip, Pin, Plus, Trash2, Upload, X } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { NoticeCategory, NoticeItem } from '../../types/school';
-import {
-  cleanBilingual,
-  hasAnyText,
-  pickText,
-  readAttachmentFile,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
 
 const EMPTY_NOTICE: Omit<NoticeItem, 'id'> = {
   title: { en: '', ta: '' },
@@ -20,7 +15,14 @@ const EMPTY_NOTICE: Omit<NoticeItem, 'id'> = {
 };
 
 export const AdminNoticesPanel: React.FC = () => {
-  const { data, upsertNotice, deleteNotice, togglePinNotice, showToast } = useSchoolData();
+  const {
+    data,
+    upsertNotice,
+    deleteNotice,
+    togglePinNotice,
+    uploadAdminAttachment,
+    showToast,
+  } = useSchoolData();
   const [editing, setEditing] = useState<NoticeItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
@@ -40,11 +42,13 @@ export const AdminNoticesPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editing) return;
     try {
-      const attachment = await readAttachmentFile(file);
+      const attachment = await uploadAdminAttachment(file);
       setEditing({ ...editing, attachment });
       showToast(`Attached "${attachment.name}".`);
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to attach file.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to attach file.', 'error');
+      }
     }
   };
 
@@ -64,14 +68,18 @@ export const AdminNoticesPanel: React.FC = () => {
     const cleanedContent = cleanBilingual(editing.content);
     const cleanedSummary = cleanBilingual(editing.summary);
 
-    await upsertNotice({
-      ...editing,
-      title: cleanBilingual(editing.title),
-      summary: cleanedSummary,
-      content: hasAnyText(cleanedContent) ? cleanedContent : cleanedSummary,
-    });
-    setEditing(null);
-    setIsCreating(false);
+    try {
+      await upsertNotice({
+        ...editing,
+        title: cleanBilingual(editing.title),
+        summary: cleanedSummary,
+        content: hasAnyText(cleanedContent) ? cleanedContent : cleanedSummary,
+      });
+      setEditing(null);
+      setIsCreating(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (
@@ -380,7 +388,7 @@ export const AdminNoticesPanel: React.FC = () => {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={() => void togglePinNotice(notice.id)}
+                  onClick={() => void togglePinNotice(notice.id).catch(() => undefined)}
                   className={`p-2 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                     notice.pinned
                       ? 'border-[var(--brand-primary)] text-[var(--brand-primary)] dark:border-[var(--brand-accent)] dark:text-[var(--brand-accent)]'
@@ -403,7 +411,7 @@ export const AdminNoticesPanel: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void deleteNotice(notice.id)}
+                  onClick={() => void deleteNotice(notice.id).catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                   title="Delete notice"
                 >

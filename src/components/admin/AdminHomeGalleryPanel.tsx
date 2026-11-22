@@ -2,11 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Edit2, ImagePlus, Trash2, Upload, X } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { SchoolGlimpse } from '../../types/school';
-import {
-  cleanBilingual,
-  pickText,
-  readImageFileAsDataUrl,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, pickText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 export const AdminHomeGalleryPanel: React.FC = () => {
@@ -15,6 +11,7 @@ export const AdminHomeGalleryPanel: React.FC = () => {
     upsertSchoolGlimpse,
     deleteSchoolGlimpse,
     reorderSchoolGlimpse,
+    uploadAdminImage,
     showToast,
   } = useSchoolData();
   const [editingPhoto, setEditingPhoto] = useState<SchoolGlimpse | null>(null);
@@ -36,11 +33,13 @@ export const AdminHomeGalleryPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editingPhoto) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 1500, quality: 0.84 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 1500, quality: 0.84 });
       setEditingPhoto({ ...editingPhoto, url: dataUrl });
-      showToast('School photograph loaded.');
+      showToast('School photograph uploaded.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to read image file.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to read image file.', 'error');
+      }
     }
   };
 
@@ -53,14 +52,18 @@ export const AdminHomeGalleryPanel: React.FC = () => {
       return;
     }
 
-    await upsertSchoolGlimpse({
-      ...editingPhoto,
-      url: editingPhoto.url.trim(),
-      caption: cleanBilingual(editingPhoto.caption),
-      date: editingPhoto.date?.trim() || undefined,
-    });
-    setEditingPhoto(null);
-    setIsCreating(false);
+    try {
+      await upsertSchoolGlimpse({
+        ...editingPhoto,
+        url: editingPhoto.url.trim(),
+        caption: cleanBilingual(editingPhoto.caption),
+        date: editingPhoto.date?.trim() || undefined,
+      });
+      setEditingPhoto(null);
+      setIsCreating(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (
@@ -259,7 +262,7 @@ export const AdminHomeGalleryPanel: React.FC = () => {
                 <button
                   type="button"
                   disabled={index === 0}
-                  onClick={() => void reorderSchoolGlimpse(photo.id, 'up')}
+                  onClick={() => void reorderSchoolGlimpse(photo.id, 'up').catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                   title="Move earlier"
                   aria-label="Move slide up"
@@ -269,7 +272,7 @@ export const AdminHomeGalleryPanel: React.FC = () => {
                 <button
                   type="button"
                   disabled={index === data.schoolGlimpses.length - 1}
-                  onClick={() => void reorderSchoolGlimpse(photo.id, 'down')}
+                  onClick={() => void reorderSchoolGlimpse(photo.id, 'down').catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                   title="Move later"
                   aria-label="Move slide down"
@@ -290,7 +293,7 @@ export const AdminHomeGalleryPanel: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void deleteSchoolGlimpse(photo.id)}
+                  onClick={() => void deleteSchoolGlimpse(photo.id).catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                   title="Delete slide"
                   aria-label="Delete slide"

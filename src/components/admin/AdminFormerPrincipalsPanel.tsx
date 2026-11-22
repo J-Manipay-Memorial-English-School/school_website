@@ -11,12 +11,7 @@ import {
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { FormerPrincipal } from '../../types/school';
-import {
-  cleanBilingual,
-  hasAnyText,
-  pickText,
-  readImageFileAsDataUrl,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 export const AdminFormerPrincipalsPanel: React.FC = () => {
@@ -25,6 +20,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
     upsertFormerPrincipal,
     deleteFormerPrincipal,
     reorderFormerPrincipal,
+    uploadAdminImage,
     showToast,
   } = useSchoolData();
 
@@ -48,11 +44,13 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editingItem) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 900, quality: 0.85 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 900, quality: 0.85 });
       setEditingItem({ ...editingItem, photoUrl: dataUrl });
       showToast('Former principal portrait uploaded.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to read image file.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to read image file.', 'error');
+      }
     }
   };
 
@@ -70,16 +68,20 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
     }
 
     const cleanedNote = cleanBilingual(editingItem.note);
-    await upsertFormerPrincipal({
-      ...editingItem,
-      name: cleanBilingual(editingItem.name),
-      tenure: cleanBilingual(editingItem.tenure),
-      note: hasAnyText(cleanedNote) ? cleanedNote : undefined,
-      photoUrl: editingItem.photoUrl?.trim() || '',
-    });
+    try {
+      await upsertFormerPrincipal({
+        ...editingItem,
+        name: cleanBilingual(editingItem.name),
+        tenure: cleanBilingual(editingItem.tenure),
+        note: hasAnyText(cleanedNote) ? cleanedNote : undefined,
+        photoUrl: editingItem.photoUrl?.trim() || '',
+      });
 
-    setEditingItem(null);
-    setIsCreating(false);
+      setEditingItem(null);
+      setIsCreating(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (
@@ -367,7 +369,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                   <button
                     type="button"
                     disabled={index === 0}
-                    onClick={() => void reorderFormerPrincipal(principal.id, 'up')}
+                    onClick={() => void reorderFormerPrincipal(principal.id, 'up').catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                     title="Move earlier"
                     aria-label="Move former principal up"
@@ -377,7 +379,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                   <button
                     type="button"
                     disabled={index === data.formerPrincipals.length - 1}
-                    onClick={() => void reorderFormerPrincipal(principal.id, 'down')}
+                    onClick={() => void reorderFormerPrincipal(principal.id, 'down').catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                     title="Move later"
                     aria-label="Move former principal down"
@@ -398,7 +400,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => void deleteFormerPrincipal(principal.id)}
+                    onClick={() => void deleteFormerPrincipal(principal.id).catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                     title="Delete record"
                     aria-label="Delete former principal"

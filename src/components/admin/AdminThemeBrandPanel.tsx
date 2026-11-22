@@ -39,16 +39,24 @@ export const AdminThemeBrandPanel: React.FC = () => {
 
   const applyCustomColors = async (e: React.FormEvent) => {
     e.preventDefault();
-    await updateBrandTheme({
-      primaryColor,
-      accentColor,
-      presetName: 'Custom Brand Palette',
-    });
+    try {
+      await updateBrandTheme({
+        primaryColor,
+        accentColor,
+        presetName: 'Custom Brand Palette',
+      });
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   const handleConfirmReset = async () => {
-    await resetAllToDefaults();
-    setConfirmResetOpen(false);
+    try {
+      await resetAllToDefaults();
+      setConfirmResetOpen(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (
@@ -78,7 +86,7 @@ export const AdminThemeBrandPanel: React.FC = () => {
               <button
                 key={preset.presetName}
                 type="button"
-                onClick={() => void updateBrandTheme(preset)}
+                onClick={() => void updateBrandTheme(preset).catch(() => undefined)}
                 className={`text-left rounded-xl border p-4 transition-all cursor-pointer ${
                   active
                     ? 'border-[var(--brand-primary)] dark:border-[var(--brand-accent)] bg-stone-50 dark:bg-stone-950'

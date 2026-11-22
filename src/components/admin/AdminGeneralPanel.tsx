@@ -2,12 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { RotateCcw, Save, Upload } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { HeritageConfig, HeroConfig } from '../../types/school';
-import { readImageFileAsDataUrl } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 import { SchoolCrest } from '../SchoolCrest';
 
 export const AdminGeneralPanel: React.FC = () => {
-  const { data, updateGeneralAndHero, resetSchoolLogo, showToast } = useSchoolData();
+  const { data, updateGeneralAndHero, resetSchoolLogo, uploadAdminImage, showToast } =
+    useSchoolData();
   const [schoolLogoUrl, setSchoolLogoUrl] = useState<string>(data.schoolLogoUrl);
   const [hero, setHero] = useState<HeroConfig>(data.hero);
   const [heritage, setHeritage] = useState<HeritageConfig>(data.heritage);
@@ -26,6 +26,8 @@ export const AdminGeneralPanel: React.FC = () => {
     setSaving(true);
     try {
       await updateGeneralAndHero({ schoolLogoUrl, hero, heritage });
+    } catch {
+      // Toast error handled in SchoolDataContext
     } finally {
       setSaving(false);
     }
@@ -36,11 +38,13 @@ export const AdminGeneralPanel: React.FC = () => {
     e.target.value = '';
     if (!file) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 800, quality: 0.9 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 800, quality: 0.9 });
       setSchoolLogoUrl(dataUrl);
       showToast('Crest image uploaded. Click Save Changes to publish.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to load crest image.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to load crest image.', 'error');
+      }
     }
   };
 
@@ -49,17 +53,23 @@ export const AdminGeneralPanel: React.FC = () => {
     e.target.value = '';
     if (!file) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 1600, quality: 0.84 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 1600, quality: 0.84 });
       setHero((prev) => ({ ...prev, bannerUrl: dataUrl }));
       showToast('School banner uploaded. Click Save Changes to publish.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to load banner image.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to load banner image.', 'error');
+      }
     }
   };
 
   const handleResetLogo = async () => {
-    const defaultUrl = await resetSchoolLogo();
-    setSchoolLogoUrl(defaultUrl);
+    try {
+      const defaultUrl = await resetSchoolLogo();
+      setSchoolLogoUrl(defaultUrl);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (

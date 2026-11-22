@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { ClassStrengthItem, PrincipalConfig, SchoolStats } from '../../types/school';
-import { hasAnyText, readImageFileAsDataUrl } from '../../utils/schoolHelpers';
+import { hasAnyText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 export const AdminPrincipalStatsPanel: React.FC = () => {
-  const { data, updatePrincipalAndStats, showToast } = useSchoolData();
+  const { data, updatePrincipalAndStats, uploadAdminImage, showToast } = useSchoolData();
   const [principal, setPrincipal] = useState<PrincipalConfig>(data.principal);
   const [stats, setStats] = useState<SchoolStats>(data.stats);
   const [studentStrength, setStudentStrength] = useState<ClassStrengthItem[]>(data.studentStrength);
@@ -39,11 +39,13 @@ export const AdminPrincipalStatsPanel: React.FC = () => {
     e.target.value = '';
     if (!file) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 1000, quality: 0.85 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 1000, quality: 0.85 });
       setPrincipal((prev) => ({ ...prev, photoUrl: dataUrl }));
       showToast('Principal portrait uploaded. Click Save Changes to publish.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to load image file.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to load image file.', 'error');
+      }
     }
   };
 
@@ -103,6 +105,8 @@ export const AdminPrincipalStatsPanel: React.FC = () => {
         },
         studentStrength,
       });
+    } catch {
+      // Toast error handled in SchoolDataContext
     } finally {
       setSaving(false);
     }

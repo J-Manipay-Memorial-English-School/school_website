@@ -11,16 +11,12 @@ import {
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { ExamCategory, ExamResultItem, ExamTopPerformer } from '../../types/school';
-import {
-  cleanBilingual,
-  hasAnyText,
-  pickText,
-  readImageFileAsDataUrl,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 export const AdminExamResultsPanel: React.FC = () => {
-  const { data, upsertExamResult, deleteExamResult, showToast } = useSchoolData();
+  const { data, upsertExamResult, deleteExamResult, uploadAdminImage, showToast } =
+    useSchoolData();
   const [editingResult, setEditingResult] = useState<ExamResultItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [activePerformerId, setActivePerformerId] = useState<string | null>(null);
@@ -77,11 +73,13 @@ export const AdminExamResultsPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editingResult || !activePerformerId) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 700, quality: 0.85 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 700, quality: 0.85 });
       updatePerformer(activePerformerId, { photoUrl: dataUrl });
       showToast('Student portrait uploaded.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to read image file.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to read image file.', 'error');
+      }
     } finally {
       setActivePerformerId(null);
     }
@@ -93,9 +91,7 @@ export const AdminExamResultsPanel: React.FC = () => {
     if (files.length === 0 || !editingResult) return;
     try {
       const uploadedUrls = await Promise.all(
-        files.map((file) =>
-          readImageFileAsDataUrl(file, { maxDimension: 1400, quality: 0.82 })
-        )
+        files.map((file) => uploadAdminImage(file, { maxDimension: 1400, quality: 0.82 }))
       );
       setEditingResult({
         ...editingResult,
@@ -103,7 +99,9 @@ export const AdminExamResultsPanel: React.FC = () => {
       });
       showToast(`${uploadedUrls.length} celebration photo(s) uploaded.`);
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to read image files.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to read image files.', 'error');
+      }
     }
   };
 
@@ -137,22 +135,26 @@ export const AdminExamResultsPanel: React.FC = () => {
     }
 
     const cleanedSummary = cleanBilingual(editingResult.summary);
-    await upsertExamResult({
-      ...editingResult,
-      year: editingResult.year.trim(),
-      passPercentage: editingResult.passPercentage.trim(),
-      summary: hasAnyText(cleanedSummary) ? cleanedSummary : undefined,
-      topPerformers: editingResult.topPerformers.map((tp) => ({
-        ...tp,
-        name: cleanBilingual(tp.name),
-        achievement: cleanBilingual(tp.achievement),
-        photoUrl: tp.photoUrl?.trim() || '',
-      })),
-      photos: (editingResult.photos || []).filter(Boolean),
-    });
+    try {
+      await upsertExamResult({
+        ...editingResult,
+        year: editingResult.year.trim(),
+        passPercentage: editingResult.passPercentage.trim(),
+        summary: hasAnyText(cleanedSummary) ? cleanedSummary : undefined,
+        topPerformers: editingResult.topPerformers.map((tp) => ({
+          ...tp,
+          name: cleanBilingual(tp.name),
+          achievement: cleanBilingual(tp.achievement),
+          photoUrl: tp.photoUrl?.trim() || '',
+        })),
+        photos: (editingResult.photos || []).filter(Boolean),
+      });
 
-    setEditingResult(null);
-    setIsCreating(false);
+      setEditingResult(null);
+      setIsCreating(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   const sortedResults = [...data.examResults].sort(
@@ -563,7 +565,7 @@ export const AdminExamResultsPanel: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void deleteExamResult(res.id)}
+                  onClick={() => void deleteExamResult(res.id).catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                   title="Delete result"
                   aria-label="Delete result"

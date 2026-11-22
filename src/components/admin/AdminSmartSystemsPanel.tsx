@@ -58,6 +58,8 @@ export const AdminSmartSystemsPanel: React.FC = () => {
           url: sys.url.trim(),
         }))
       );
+    } catch {
+      // Toast error handled in SchoolDataContext
     } finally {
       setSaving(false);
     }

@@ -2,12 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Edit2, Trash2, Upload, UserPlus, X } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { StaffMember, StaffSectionCategory } from '../../types/school';
-import {
-  cleanBilingual,
-  hasAnyText,
-  pickText,
-  readImageFileAsDataUrl,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 const SECTION_OPTIONS: StaffSectionCategory[] = ['Primary', 'Secondary', 'GCE A/L'];
@@ -28,6 +23,7 @@ export const AdminStaffPanel: React.FC = () => {
     upsertStaffMember,
     deleteStaffMember,
     reorderStaffMember,
+    uploadAdminImage,
     showToast,
   } = useSchoolData();
 
@@ -52,11 +48,13 @@ export const AdminStaffPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editingMember) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 800, quality: 0.85 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 800, quality: 0.85 });
       setEditingMember({ ...editingMember, photoUrl: dataUrl });
       showToast('Teacher photo uploaded.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Failed to load image.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Failed to load image.', 'error');
+      }
     }
   };
 
@@ -74,15 +72,19 @@ export const AdminStaffPanel: React.FC = () => {
     }
 
     const cleanedQual = cleanBilingual(editingMember.qualifications);
-    await upsertStaffMember({
-      ...editingMember,
-      photoUrl: editingMember.photoUrl.trim(),
-      name: cleanBilingual(editingMember.name),
-      role: cleanBilingual(editingMember.role),
-      qualifications: hasAnyText(cleanedQual) ? cleanedQual : undefined,
-    });
-    setEditingMember(null);
-    setIsCreating(false);
+    try {
+      await upsertStaffMember({
+        ...editingMember,
+        photoUrl: editingMember.photoUrl.trim(),
+        name: cleanBilingual(editingMember.name),
+        role: cleanBilingual(editingMember.role),
+        qualifications: hasAnyText(cleanedQual) ? cleanedQual : undefined,
+      });
+      setEditingMember(null);
+      setIsCreating(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   return (
@@ -401,7 +403,7 @@ export const AdminStaffPanel: React.FC = () => {
                   <button
                     type="button"
                     disabled={index === 0}
-                    onClick={() => void reorderStaffMember(member.id, 'up')}
+                    onClick={() => void reorderStaffMember(member.id, 'up').catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                     title="Move up"
                     aria-label="Move teacher up"
@@ -411,7 +413,7 @@ export const AdminStaffPanel: React.FC = () => {
                   <button
                     type="button"
                     disabled={index === data.staffMembers.length - 1}
-                    onClick={() => void reorderStaffMember(member.id, 'down')}
+                    onClick={() => void reorderStaffMember(member.id, 'down').catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed"
                     title="Move down"
                     aria-label="Move teacher down"
@@ -437,7 +439,7 @@ export const AdminStaffPanel: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => void deleteStaffMember(member.id)}
+                    onClick={() => void deleteStaffMember(member.id).catch(() => undefined)}
                     className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                     title="Delete teacher"
                     aria-label="Delete teacher"

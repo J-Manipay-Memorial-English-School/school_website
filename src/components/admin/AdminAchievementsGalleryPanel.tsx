@@ -7,12 +7,7 @@ import {
   GalleryCategory,
   GalleryPhoto,
 } from '../../types/school';
-import {
-  cleanBilingual,
-  hasAnyText,
-  pickText,
-  readImageFileAsDataUrl,
-} from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 
 const MAX_ALBUM_PHOTOS = 10;
@@ -24,6 +19,7 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
     deleteAchievement,
     upsertGalleryPhoto,
     deleteGalleryPhoto,
+    uploadAdminImage,
     showToast,
   } = useSchoolData();
 
@@ -55,11 +51,13 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
     e.target.value = '';
     if (!file || !editingAch) return;
     try {
-      const dataUrl = await readImageFileAsDataUrl(file, { maxDimension: 1200, quality: 0.84 });
+      const dataUrl = await uploadAdminImage(file, { maxDimension: 1200, quality: 0.84 });
       setEditingAch({ ...editingAch, photoUrl: dataUrl });
       showToast('Achievement photo loaded.');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to read image.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to read image.', 'error');
+      }
     }
   };
 
@@ -77,18 +75,22 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
     }
 
     const cleanedDistinction = cleanBilingual(editingAch.distinction);
-    await upsertAchievement({
-      ...editingAch,
-      title: cleanBilingual(editingAch.title),
-      recipient: cleanBilingual(editingAch.recipient),
-      description: cleanBilingual(editingAch.description),
-      distinction: hasAnyText(cleanedDistinction)
-        ? cleanedDistinction
-        : { en: 'Merit Award', ta: 'சிறப்பு விருது' },
-      photoUrl: editingAch.photoUrl?.trim() || undefined,
-    });
-    setEditingAch(null);
-    setIsCreatingAch(false);
+    try {
+      await upsertAchievement({
+        ...editingAch,
+        title: cleanBilingual(editingAch.title),
+        recipient: cleanBilingual(editingAch.recipient),
+        description: cleanBilingual(editingAch.description),
+        distinction: hasAnyText(cleanedDistinction)
+          ? cleanedDistinction
+          : { en: 'Merit Award', ta: 'சிறப்பு விருது' },
+        photoUrl: editingAch.photoUrl?.trim() || undefined,
+      });
+      setEditingAch(null);
+      setIsCreatingAch(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   const startCreateAlbum = () => {
@@ -132,7 +134,7 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
     try {
       const uploadedUrls = await Promise.all(
         acceptedFiles.map((file) =>
-          readImageFileAsDataUrl(file, { maxDimension: 1200, quality: 0.8 })
+          uploadAdminImage(file, { maxDimension: 1200, quality: 0.8 })
         )
       );
       const nextPhotos = [...currentPhotos, ...uploadedUrls];
@@ -147,7 +149,9 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
       });
       showToast(`Added ${uploadedUrls.length} photo(s) to event album.`);
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Unable to process selected images.', 'error');
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to process selected images.', 'error');
+      }
     }
   };
 
@@ -195,14 +199,18 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
         ? editingAlbum.url
         : currentPhotos[0];
 
-    await upsertGalleryPhoto({
-      ...editingAlbum,
-      url: coverUrl,
-      photos: currentPhotos,
-      caption: cleanBilingual(editingAlbum.caption),
-    });
-    setEditingAlbum(null);
-    setIsCreatingAlbum(false);
+    try {
+      await upsertGalleryPhoto({
+        ...editingAlbum,
+        url: coverUrl,
+        photos: currentPhotos,
+        caption: cleanBilingual(editingAlbum.caption),
+      });
+      setEditingAlbum(null);
+      setIsCreatingAlbum(false);
+    } catch {
+      // Toast error handled in SchoolDataContext
+    }
   };
 
   const albumPhotosList = editingAlbum
@@ -539,7 +547,7 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => void deleteAchievement(ach.id)}
+                  onClick={() => void deleteAchievement(ach.id).catch(() => undefined)}
                   className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                   title="Delete achievement"
                 >
@@ -824,7 +832,7 @@ export const AdminAchievementsGalleryPanel: React.FC = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => void deleteGalleryPhoto(photo.id)}
+                      onClick={() => void deleteGalleryPhoto(photo.id).catch(() => undefined)}
                       className="p-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
                       title="Delete event album"
                     >
