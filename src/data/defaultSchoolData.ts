@@ -126,11 +126,62 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ],
     },
   },
+  academicsConfig: {
+    kicker: {
+      en: '1AC Provincial Curriculum',
+      ta: '1AC மாகாணக் கலைத்திட்டம்',
+    },
+    heading: {
+      en: 'Academic Pathways & Streams',
+      ta: 'கல்விப் பாதைகளும் பிரிவுகளும்',
+    },
+    subtitle: {
+      en: 'Structured progression from foundational primary literacy to GCE Advanced Level specialization in Arts, Commerce, and Technology.',
+      ta: 'ஆரம்பக் கல்வி முதல் க.பொ.த. உயர்தர கலை, வணிகம் மற்றும் தொழில்நுட்பப் பிரிவுகள் வரையிலான திட்டமிட்ட கல்வி.',
+    },
+    subjectsHeading: {
+      en: 'Core & Elective Subjects',
+      ta: 'முதன்மை மற்றும் விருப்பப் பாடங்கள்',
+    },
+    filters: [
+      {
+        id: 'All',
+        label: {
+          en: 'All Levels',
+          ta: 'அனைத்து நிலைகளும்',
+        },
+        isAll: true,
+      },
+      {
+        id: 'Primary',
+        label: {
+          en: 'Primary (1–5)',
+          ta: 'ஆரம்பப் பிரிவு (1–5)',
+        },
+      },
+      {
+        id: 'Junior Secondary',
+        label: {
+          en: 'Junior Secondary (6–11)',
+          ta: 'கனிஷ்ட இடைநிலை (6–11)',
+        },
+      },
+      {
+        id: 'GCE A/L',
+        label: {
+          en: 'GCE A/L Streams',
+          ta: 'க.பொ.த. உயர்தரம் (A/L)',
+        },
+      },
+    ],
+  },
   academics: [
     {
       id: 'prog-primary',
       stage: 'Primary',
       streamCode: 'GR 01–05',
+      iconKey: 'book',
+      iconImageUrl: '',
       title: {
         en: 'Primary Foundation Wing',
         ta: 'ஆரம்பக் கல்விப் பிரிவு',
@@ -156,6 +207,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       id: 'prog-junior',
       stage: 'Junior Secondary',
       streamCode: 'GR 06–11',
+      iconKey: 'graduation',
+      iconImageUrl: '',
       title: {
         en: 'Junior & Senior Secondary (GCE O/L)',
         ta: 'இடைநிலைப் பிரிவு (க.பொ.த. சாதாரண தரம்)',
@@ -181,6 +234,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       id: 'prog-al-arts',
       stage: 'GCE A/L',
       streamCode: 'A/L ARTS',
+      iconKey: 'compass',
+      iconImageUrl: '',
       title: {
         en: 'GCE A/L Arts & Humanities Stream',
         ta: 'க.பொ.த. உயர்தர கலைப் பிரிவு',
@@ -206,6 +261,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       id: 'prog-al-commerce',
       stage: 'GCE A/L',
       streamCode: 'A/L COMM',
+      iconKey: 'chart',
+      iconImageUrl: '',
       title: {
         en: 'GCE A/L Commerce & Management Stream',
         ta: 'க.பொ.த. உயர்தர வணிகப் பிரிவு',
@@ -231,6 +288,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       id: 'prog-al-tech',
       stage: 'GCE A/L',
       streamCode: 'A/L TECH',
+      iconKey: 'cpu',
+      iconImageUrl: '',
       title: {
         en: 'GCE A/L Technology Stream',
         ta: 'க.பொ.த. உயர்தர தொழில்நுட்பப் பிரிவு',

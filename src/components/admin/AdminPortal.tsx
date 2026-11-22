@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Award,
   Bell,
+  BookOpen,
   Cpu,
   ExternalLink,
   GraduationCap,
@@ -17,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { SchoolCrest } from '../SchoolCrest';
+import { AdminAcademicsPanel } from './AdminAcademicsPanel';
 import { AdminAchievementsGalleryPanel } from './AdminAchievementsGalleryPanel';
 import { AdminExamResultsPanel } from './AdminExamResultsPanel';
 import { AdminFormerPrincipalsPanel } from './AdminFormerPrincipalsPanel';
@@ -32,6 +34,7 @@ import { AdminThemeBrandPanel } from './AdminThemeBrandPanel';
 type AdminTab =
   | 'general'
   | 'principal'
+  | 'academics'
   | 'staff'
   | 'formerPrincipals'
   | 'examResults'
@@ -60,6 +63,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToSite }) => {
   }[] = [
     { id: 'general', label: 'General, Crest & Hero', icon: LayoutDashboard },
     { id: 'principal', label: 'Stats, Strength & Principal', icon: Users },
+    { id: 'academics', label: 'Academic Pathways', icon: BookOpen },
     { id: 'staff', label: 'Teachers / Staff', icon: GraduationCap },
     { id: 'formerPrincipals', label: 'Former Principals', icon: History },
     { id: 'examResults', label: 'Exam Results', icon: Trophy },
@@ -182,6 +186,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToSite }) => {
         <main className="flex-1 p-4 sm:p-8 max-w-6xl w-full mx-auto">
           {activeTab === 'general' && <AdminGeneralPanel />}
           {activeTab === 'principal' && <AdminPrincipalStatsPanel />}
+          {activeTab === 'academics' && <AdminAcademicsPanel />}
           {activeTab === 'staff' && <AdminStaffPanel />}
           {activeTab === 'formerPrincipals' && <AdminFormerPrincipalsPanel />}
           {activeTab === 'examResults' && <AdminExamResultsPanel />}

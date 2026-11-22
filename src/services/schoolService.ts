@@ -53,6 +53,18 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
       Array.isArray(item.photos) && item.photos.length > 0 ? item.photos : [item.url],
   }));
 
+  const rawAcademicsConfig = parsed.academicsConfig;
+  const resolvedAcademicsConfig = {
+    kicker: rawAcademicsConfig?.kicker || defaults.academicsConfig.kicker,
+    heading: rawAcademicsConfig?.heading || defaults.academicsConfig.heading,
+    subtitle: rawAcademicsConfig?.subtitle || defaults.academicsConfig.subtitle,
+    subjectsHeading:
+      rawAcademicsConfig?.subjectsHeading || defaults.academicsConfig.subjectsHeading,
+    filters: Array.isArray(rawAcademicsConfig?.filters)
+      ? rawAcademicsConfig.filters
+      : defaults.academicsConfig.filters,
+  };
+
   return {
     ...defaults,
     ...parsed,
@@ -62,6 +74,8 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
         : defaults.schoolLogoUrl,
     stats: resolvedStats,
     studentStrength: resolvedStrength,
+    academicsConfig: resolvedAcademicsConfig,
+    academics: Array.isArray(parsed.academics) ? parsed.academics : defaults.academics,
     gallery: resolvedGallery,
     schoolGlimpses:
       Array.isArray(parsed.schoolGlimpses) && parsed.schoolGlimpses.length > 0

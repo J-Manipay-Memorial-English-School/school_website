@@ -30,6 +30,28 @@ export function pickList(
 }
 
 /**
+ * Row-aligned bilingual array selector for academic card subjects.
+ * Preserves per-row fallback when admins enter mixed or single-language subject items.
+ */
+export function pickSubjectList(
+  lists: { en: string[]; ta: string[] } | undefined,
+  lang: Language
+): string[] {
+  if (!lists) return [];
+  const enArr = Array.isArray(lists.en) ? lists.en : [];
+  const taArr = Array.isArray(lists.ta) ? lists.ta : [];
+  const len = Math.max(enArr.length, taArr.length);
+  const result: string[] = [];
+  for (let i = 0; i < len; i += 1) {
+    const picked = pickText({ en: enArr[i] || '', ta: taArr[i] || '' }, lang);
+    if (picked) {
+      result.push(picked);
+    }
+  }
+  return result;
+}
+
+/**
  * Normalizes a bilingual form input without forcing both languages.
  */
 export function cleanBilingual(text: BilingualText | undefined): BilingualText {

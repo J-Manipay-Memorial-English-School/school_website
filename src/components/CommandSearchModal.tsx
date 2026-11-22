@@ -76,7 +76,13 @@ export const CommandSearchModal: React.FC<CommandSearchModalProps> = ({
     });
 
     data.academics.forEach((prog) => {
-      const hay = `${prog.title.en} ${prog.title.ta} ${prog.overview.en} ${prog.subjects.en.join(' ')} ${prog.subjects.ta.join(' ')} ${prog.stage}`.toLowerCase();
+      const linkedFilter = (data.academicsConfig?.filters || []).find(
+        (f) => !f.isAll && f.id === prog.stage
+      );
+      const filterText = linkedFilter
+        ? `${linkedFilter.label.en} ${linkedFilter.label.ta}`
+        : prog.stage;
+      const hay = `${prog.title.en} ${prog.title.ta} ${prog.grades.en} ${prog.grades.ta} ${prog.overview.en} ${prog.overview.ta} ${prog.subjects.en.join(' ')} ${prog.subjects.ta.join(' ')} ${prog.streamCode} ${filterText}`.toLowerCase();
       if (!q || hay.includes(q)) {
         list.push({
           id: `res-${prog.id}`,

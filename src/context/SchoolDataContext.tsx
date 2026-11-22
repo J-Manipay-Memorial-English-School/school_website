@@ -13,6 +13,8 @@ import {
   verifyAdminPassword,
 } from '../services/schoolService';
 import {
+  AcademicProgram,
+  AcademicsConfig,
   AchievementItem,
   ClassStrengthItem,
   ExamResultItem,
@@ -111,6 +113,13 @@ interface SchoolDataContextValue {
   reorderFormerPrincipal: (id: string, direction: 'up' | 'down') => Promise<void>;
   upsertExamResult: (result: ExamResultItem) => Promise<void>;
   deleteExamResult: (id: string) => Promise<void>;
+  updateAcademicsConfig: (
+    academicsConfig: AcademicsConfig,
+    academicsOverride?: AcademicProgram[]
+  ) => Promise<void>;
+  upsertAcademicProgram: (program: AcademicProgram) => Promise<void>;
+  deleteAcademicProgram: (id: string) => Promise<void>;
+  reorderAcademicProgram: (id: string, direction: 'up' | 'down') => Promise<void>;
   updateSmartSystems: (systems: SmartSystemItem[]) => Promise<void>;
   updateBrandTheme: (brandTheme: ThemeBrandConfig) => Promise<void>;
   resetAllToDefaults: () => Promise<void>;
@@ -545,6 +554,54 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     [data, saveAndSync, showToast]
   );
 
+  const updateAcademicsConfig = useCallback(
+    async (academicsConfig: AcademicsConfig, academicsOverride?: AcademicProgram[]) => {
+      await saveAndSync({
+        ...data,
+        academicsConfig,
+        academics: academicsOverride ?? data.academics,
+      });
+      showToast('Academic Pathways configuration saved.');
+    },
+    [data, saveAndSync, showToast]
+  );
+
+  const upsertAcademicProgram = useCallback(
+    async (program: AcademicProgram) => {
+      const exists = data.academics.some((p) => p.id === program.id);
+      const academics = exists
+        ? data.academics.map((p) => (p.id === program.id ? program : p))
+        : [...data.academics, program];
+      await saveAndSync({ ...data, academics });
+      showToast(exists ? 'Academic pathway card updated.' : 'New academic pathway card added.');
+    },
+    [data, saveAndSync, showToast]
+  );
+
+  const deleteAcademicProgram = useCallback(
+    async (id: string) => {
+      const academics = data.academics.filter((p) => p.id !== id);
+      await saveAndSync({ ...data, academics });
+      showToast('Academic pathway card removed.', 'info');
+    },
+    [data, saveAndSync, showToast]
+  );
+
+  const reorderAcademicProgram = useCallback(
+    async (id: string, direction: 'up' | 'down') => {
+      const list = [...data.academics];
+      const idx = list.findIndex((item) => item.id === id);
+      if (idx === -1) return;
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= list.length) return;
+      const [moved] = list.splice(idx, 1);
+      list.splice(targetIdx, 0, moved);
+      await saveAndSync({ ...data, academics: list });
+      showToast('Academic pathway card order updated.');
+    },
+    [data, saveAndSync, showToast]
+  );
+
   const updateSmartSystems = useCallback(
     async (smartSystems: SmartSystemItem[]) => {
       await saveAndSync({ ...data, smartSystems });
@@ -639,6 +696,10 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         reorderFormerPrincipal,
         upsertExamResult,
         deleteExamResult,
+        updateAcademicsConfig,
+        upsertAcademicProgram,
+        deleteAcademicProgram,
+        reorderAcademicProgram,
         updateSmartSystems,
         updateBrandTheme,
         resetAllToDefaults,

@@ -162,7 +162,34 @@ export interface SmartSystemItem {
   enabled: boolean;
 }
 
-export type AcademicStage = 'Primary' | 'Junior Secondary' | 'GCE A/L';
+export type AcademicStage = string;
+
+export type AcademicIconKey =
+  | 'book'
+  | 'graduation'
+  | 'compass'
+  | 'chart'
+  | 'cpu'
+  | 'flask'
+  | 'palette'
+  | 'globe'
+  | 'code'
+  | 'calculator'
+  | 'award';
+
+export interface AcademicFilterTab {
+  id: string;
+  label: BilingualText;
+  isAll?: boolean;
+}
+
+export interface AcademicsConfig {
+  kicker: BilingualText;
+  heading: BilingualText;
+  subtitle: BilingualText;
+  subjectsHeading: BilingualText;
+  filters: AcademicFilterTab[];
+}
 
 export interface AcademicProgram {
   id: string;
@@ -175,7 +202,9 @@ export interface AcademicProgram {
     en: string[];
     ta: string[];
   };
-  pathways: BilingualText;
+  pathways?: BilingualText;
+  iconKey?: AcademicIconKey;
+  iconImageUrl?: string;
 }
 
 export interface ContactInfo {
@@ -220,6 +249,7 @@ export interface SchoolData {
   studentStrength: ClassStrengthItem[];
   principal: PrincipalConfig;
   heritage: HeritageConfig;
+  academicsConfig: AcademicsConfig;
   academics: AcademicProgram[];
   notices: NoticeItem[];
   achievements: AchievementItem[];
