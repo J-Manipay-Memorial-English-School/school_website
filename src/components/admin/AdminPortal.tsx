@@ -10,8 +10,10 @@ import {
   Image,
   LayoutDashboard,
   LogOut,
+  MapPin,
   Moon,
   Palette,
+  PanelBottom,
   Sun,
   Trophy,
   Users,
@@ -20,7 +22,9 @@ import { useSchoolData } from '../../context/SchoolDataContext';
 import { SchoolCrest } from '../SchoolCrest';
 import { AdminAcademicsPanel } from './AdminAcademicsPanel';
 import { AdminAchievementsGalleryPanel } from './AdminAchievementsGalleryPanel';
+import { AdminContactPanel } from './AdminContactPanel';
 import { AdminExamResultsPanel } from './AdminExamResultsPanel';
+import { AdminFooterPanel } from './AdminFooterPanel';
 import { AdminFormerPrincipalsPanel } from './AdminFormerPrincipalsPanel';
 import { AdminGeneralPanel } from './AdminGeneralPanel';
 import { AdminHomeGalleryPanel } from './AdminHomeGalleryPanel';
@@ -42,6 +46,8 @@ type AdminTab =
   | 'smartSystems'
   | 'notices'
   | 'achievements'
+  | 'contact'
+  | 'footer'
   | 'brand';
 
 interface AdminPortalProps {
@@ -71,6 +77,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToSite }) => {
     { id: 'smartSystems', label: 'Smart Systems', icon: Cpu },
     { id: 'notices', label: 'Notices Manager', icon: Bell },
     { id: 'achievements', label: 'Achievements & Gallery', icon: Award },
+    { id: 'contact', label: 'Contact & Map', icon: MapPin },
+    { id: 'footer', label: 'Footer Manager', icon: PanelBottom },
     { id: 'brand', label: 'Theme & Brand Studio', icon: Palette },
   ];
 
@@ -194,6 +202,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ onBackToSite }) => {
           {activeTab === 'smartSystems' && <AdminSmartSystemsPanel />}
           {activeTab === 'notices' && <AdminNoticesPanel />}
           {activeTab === 'achievements' && <AdminAchievementsGalleryPanel />}
+          {activeTab === 'contact' && <AdminContactPanel />}
+          {activeTab === 'footer' && <AdminFooterPanel />}
           {activeTab === 'brand' && <AdminThemeBrandPanel />}
         </main>
       </div>

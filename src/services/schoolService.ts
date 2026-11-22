@@ -65,13 +65,96 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
       : defaults.academicsConfig.filters,
   };
 
+  const rawContact = parsed.contact;
+  const legacyItemsFromContact = rawContact
+    ? [
+        {
+          id: 'cnt-address',
+          type: 'address' as const,
+          label: defaults.contact.items?.[0]?.label || { en: 'School Address', ta: 'பாடசாலை முகவரி' },
+          value: rawContact.address || defaults.contact.address,
+        },
+        {
+          id: 'cnt-phone',
+          type: 'phone' as const,
+          label: defaults.contact.items?.[1]?.label || { en: 'Office Telephone', ta: 'அலுவலகத் தொலைபேசி' },
+          value: {
+            en: rawContact.phone || defaults.contact.phone,
+            ta: rawContact.phone || defaults.contact.phone,
+          },
+          href: rawContact.phone ? `tel:${rawContact.phone.replace(/\s+/g, '')}` : undefined,
+        },
+        {
+          id: 'cnt-email',
+          type: 'email' as const,
+          label: defaults.contact.items?.[2]?.label || { en: 'Official Email', ta: 'மின்னஞ்சல்' },
+          value: {
+            en: rawContact.email || defaults.contact.email,
+            ta: rawContact.email || defaults.contact.email,
+          },
+          href: rawContact.email ? `mailto:${rawContact.email}` : undefined,
+        },
+        {
+          id: 'cnt-hours',
+          type: 'hours' as const,
+          label: defaults.contact.items?.[3]?.label || { en: 'Office Hours', ta: 'அலுவலக நேரம்' },
+          value: rawContact.officeHours || defaults.contact.officeHours,
+        },
+      ]
+    : defaults.contact.items || [];
+
+  const resolvedContact = {
+    ...defaults.contact,
+    ...(rawContact || {}),
+    kicker: rawContact?.kicker || defaults.contact.kicker,
+    heading: rawContact?.heading || defaults.contact.heading,
+    subtitle: rawContact?.subtitle || defaults.contact.subtitle,
+    mapTitle: rawContact?.mapTitle || defaults.contact.mapTitle,
+    items: Array.isArray(rawContact?.items)
+      ? rawContact.items
+      : legacyItemsFromContact,
+    socialLinks: Array.isArray(rawContact?.socialLinks)
+      ? rawContact.socialLinks
+      : defaults.contact.socialLinks || [],
+  };
+
+  const rawFooter = parsed.footer;
+  const resolvedFooter = {
+    ...defaults.footer,
+    ...(rawFooter || {}),
+    description: rawFooter?.description || defaults.footer.description,
+    showSocialLinks:
+      typeof rawFooter?.showSocialLinks === 'boolean'
+        ? rawFooter.showSocialLinks
+        : defaults.footer.showSocialLinks,
+    columns: Array.isArray(rawFooter?.columns)
+      ? rawFooter.columns
+      : defaults.footer.columns,
+    copyrightText: rawFooter?.copyrightText || defaults.footer.copyrightText,
+    showYearPrefix:
+      typeof rawFooter?.showYearPrefix === 'boolean'
+        ? rawFooter.showYearPrefix
+        : defaults.footer.showYearPrefix,
+    adminPortalLabel: rawFooter?.adminPortalLabel || defaults.footer.adminPortalLabel,
+  };
+
   return {
     ...defaults,
     ...parsed,
+    schoolName: parsed.schoolName || defaults.schoolName,
+    shortName: parsed.shortName || defaults.shortName,
     schoolLogoUrl:
       typeof parsed.schoolLogoUrl === 'string' && parsed.schoolLogoUrl.trim()
         ? parsed.schoolLogoUrl
         : defaults.schoolLogoUrl,
+    headerTickerLabel: parsed.headerTickerLabel || defaults.headerTickerLabel,
+    tickerAnnouncements: Array.isArray(parsed.tickerAnnouncements)
+      ? parsed.tickerAnnouncements
+      : defaults.tickerAnnouncements,
+    hero: {
+      ...defaults.hero,
+      ...(parsed.hero || {}),
+    },
     stats: resolvedStats,
     studentStrength: resolvedStrength,
     academicsConfig: resolvedAcademicsConfig,
@@ -95,6 +178,8 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
       Array.isArray(parsed.smartSystems) && parsed.smartSystems.length > 0
         ? parsed.smartSystems
         : defaults.smartSystems,
+    contact: resolvedContact,
+    footer: resolvedFooter,
   };
 }
 

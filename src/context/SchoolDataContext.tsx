@@ -16,8 +16,11 @@ import {
   AcademicProgram,
   AcademicsConfig,
   AchievementItem,
+  BilingualText,
   ClassStrengthItem,
+  ContactInfo,
   ExamResultItem,
+  FooterConfig,
   FormerPrincipal,
   GalleryPhoto,
   HeritageConfig,
@@ -35,7 +38,7 @@ import {
   ThemeMode,
   ToastItem,
 } from '../types/school';
-import { readAttachmentFile, readImageFileAsDataUrl } from '../utils/schoolHelpers';
+import { pickText, readAttachmentFile, readImageFileAsDataUrl } from '../utils/schoolHelpers';
 
 const LANG_KEY = 'jmmes_lang_v1';
 const THEME_KEY = 'jmmes_theme_v1';
@@ -85,7 +88,13 @@ interface SchoolDataContextValue {
   ) => Promise<{ name: string; mimeType: string; dataUrl: string }>;
   inquiries: InquiryMessage[];
   updateGeneralAndHero: (payload: {
+    schoolName: BilingualText;
+    shortName: BilingualText;
     schoolLogoUrl: string;
+    headerTickerLabel: BilingualText;
+    tickerAnnouncements: BilingualText[];
+    primaryAddress: BilingualText;
+    schoolType: BilingualText;
     hero: HeroConfig;
     heritage: HeritageConfig;
   }) => Promise<void>;
@@ -120,6 +129,8 @@ interface SchoolDataContextValue {
   upsertAcademicProgram: (program: AcademicProgram) => Promise<void>;
   deleteAcademicProgram: (id: string) => Promise<void>;
   reorderAcademicProgram: (id: string, direction: 'up' | 'down') => Promise<void>;
+  updateContactInfo: (contact: ContactInfo) => Promise<void>;
+  updateFooterConfig: (footer: FooterConfig) => Promise<void>;
   updateSmartSystems: (systems: SmartSystemItem[]) => Promise<void>;
   updateBrandTheme: (brandTheme: ThemeBrandConfig) => Promise<void>;
   resetAllToDefaults: () => Promise<void>;
@@ -204,15 +215,19 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [themeMode]);
 
-  // Apply Language preference
+  // Apply Language preference & sync document title
   useEffect(() => {
     document.documentElement.lang = language === 'ta' ? 'ta' : 'en';
+    const resolvedName = pickText(data.schoolName, language);
+    if (resolvedName) {
+      document.title = resolvedName;
+    }
     try {
       localStorage.setItem(LANG_KEY, language);
     } catch {
       // ignore
     }
-  }, [language]);
+  }, [language, data.schoolName]);
 
   // Apply Live Brand Color Customizer CSS custom properties
   useEffect(() => {
@@ -307,17 +322,43 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const updateGeneralAndHero = useCallback(
     async (payload: {
+      schoolName: BilingualText;
+      shortName: BilingualText;
       schoolLogoUrl: string;
+      headerTickerLabel: BilingualText;
+      tickerAnnouncements: BilingualText[];
+      primaryAddress: BilingualText;
+      schoolType: BilingualText;
       hero: HeroConfig;
       heritage: HeritageConfig;
     }) => {
+      const existingItems = data.contact.items || [];
+      let updatedAddressItem = false;
+      const syncedContactItems = existingItems.map((item) => {
+        if (!updatedAddressItem && item.type === 'address') {
+          updatedAddressItem = true;
+          return { ...item, value: payload.primaryAddress };
+        }
+        return item;
+      });
+
       await saveAndSync({
         ...data,
+        schoolName: payload.schoolName,
+        shortName: payload.shortName,
         schoolLogoUrl: payload.schoolLogoUrl.trim() || DEFAULT_SCHOOL_DATA.schoolLogoUrl,
+        headerTickerLabel: payload.headerTickerLabel,
+        tickerAnnouncements: payload.tickerAnnouncements,
         hero: payload.hero,
         heritage: payload.heritage,
+        contact: {
+          ...data.contact,
+          address: payload.primaryAddress,
+          schoolType: payload.schoolType,
+          items: syncedContactItems,
+        },
       });
-      showToast('General identity, crest, Hero & Heritage updated.');
+      showToast('School identity, header, banner, crest & heritage saved.');
     },
     [data, saveAndSync, showToast]
   );
@@ -602,6 +643,36 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     [data, saveAndSync, showToast]
   );
 
+  const updateContactInfo = useCallback(
+    async (contact: ContactInfo) => {
+      const items = contact.items || [];
+      const firstAddress = items.find((i) => i.type === 'address');
+      const firstPhone = items.find((i) => i.type === 'phone');
+      const firstEmail = items.find((i) => i.type === 'email');
+      const firstHours = items.find((i) => i.type === 'hours');
+
+      const syncedContact: ContactInfo = {
+        ...contact,
+        address: firstAddress ? firstAddress.value : contact.address,
+        phone: firstPhone ? pickText(firstPhone.value, 'en') : contact.phone,
+        email: firstEmail ? pickText(firstEmail.value, 'en') : contact.email,
+        officeHours: firstHours ? firstHours.value : contact.officeHours,
+      };
+
+      await saveAndSync({ ...data, contact: syncedContact });
+      showToast('Contact details, map & social links saved.');
+    },
+    [data, saveAndSync, showToast]
+  );
+
+  const updateFooterConfig = useCallback(
+    async (footer: FooterConfig) => {
+      await saveAndSync({ ...data, footer });
+      showToast('Footer layout, columns, links & copyright saved.');
+    },
+    [data, saveAndSync, showToast]
+  );
+
   const updateSmartSystems = useCallback(
     async (smartSystems: SmartSystemItem[]) => {
       await saveAndSync({ ...data, smartSystems });
@@ -700,6 +771,8 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         upsertAcademicProgram,
         deleteAcademicProgram,
         reorderAcademicProgram,
+        updateContactInfo,
+        updateFooterConfig,
         updateSmartSystems,
         updateBrandTheme,
         resetAllToDefaults,

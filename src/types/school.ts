@@ -36,6 +36,8 @@ export interface HeroConfig {
   subtitle: BilingualText;
   eyebrow: BilingualText;
   bannerUrl: string;
+  primaryCtaLabel?: BilingualText;
+  secondaryCtaLabel?: BilingualText;
 }
 
 export interface HeritageConfig {
@@ -207,13 +209,80 @@ export interface AcademicProgram {
   iconImageUrl?: string;
 }
 
+export type ContactItemType =
+  | 'address'
+  | 'phone'
+  | 'email'
+  | 'hours'
+  | 'website'
+  | 'social'
+  | 'other';
+
+export interface ContactDetailItem {
+  id: string;
+  type: ContactItemType;
+  label: BilingualText;
+  value: BilingualText;
+  href?: string;
+}
+
+export type SocialPlatform =
+  | 'facebook'
+  | 'youtube'
+  | 'instagram'
+  | 'whatsapp'
+  | 'linkedin'
+  | 'twitter'
+  | 'website'
+  | 'email'
+  | 'other';
+
+export interface SocialQuickLink {
+  id: string;
+  platform: SocialPlatform;
+  label: BilingualText;
+  url: string;
+}
+
 export interface ContactInfo {
+  kicker?: BilingualText;
+  heading?: BilingualText;
+  subtitle?: BilingualText;
   address: BilingualText;
   phone: string;
   email: string;
   officeHours: BilingualText;
   schoolType: BilingualText;
   mapEmbedUrl: string;
+  mapTitle?: BilingualText;
+  items?: ContactDetailItem[];
+  socialLinks?: SocialQuickLink[];
+}
+
+export type FooterLinkType = 'tab' | 'url' | 'text';
+
+export interface FooterLinkItem {
+  id: string;
+  label: BilingualText;
+  linkType: FooterLinkType;
+  tab?: PublicTab;
+  url?: string;
+}
+
+export interface FooterColumn {
+  id: string;
+  title: BilingualText;
+  layout?: 'one-col' | 'two-col';
+  links: FooterLinkItem[];
+}
+
+export interface FooterConfig {
+  description: BilingualText;
+  showSocialLinks: boolean;
+  columns: FooterColumn[];
+  copyrightText: BilingualText;
+  showYearPrefix: boolean;
+  adminPortalLabel: BilingualText;
 }
 
 export interface ThemeBrandConfig {
@@ -243,6 +312,7 @@ export interface SchoolData {
   schoolName: BilingualText;
   shortName: BilingualText;
   schoolLogoUrl: string;
+  headerTickerLabel?: BilingualText;
   tickerAnnouncements: BilingualText[];
   hero: HeroConfig;
   stats: SchoolStats;
@@ -260,6 +330,7 @@ export interface SchoolData {
   examResults: ExamResultItem[];
   smartSystems: SmartSystemItem[];
   contact: ContactInfo;
+  footer: FooterConfig;
   brandTheme: ThemeBrandConfig;
   updatedAt: string;
 }

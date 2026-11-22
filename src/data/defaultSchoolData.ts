@@ -10,6 +10,10 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
     ta: 'யா/மானிப்பாய் மெமோரியல்',
   },
   schoolLogoUrl: '/src/assets/images/school_crest_logo_1794895909249.jpg',
+  headerTickerLabel: {
+    en: 'Bulletins',
+    ta: 'முக்கிய செய்திகள்',
+  },
   tickerAnnouncements: [
     {
       en: '2026 Grade 1 & Grade 6 Admissions: Application verification at the Main Office through Friday 2:00 PM',
@@ -38,6 +42,14 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ta: 'ஆரம்பக் கல்வி முதல் க.பொ.த. சாதாரண தரம் மற்றும் உயர்தர கலை, வணிகம், தொழில்நுட்பப் பிரிவுகள் வரை அறிவு, ஒழுக்கம் மற்றும் இருமொழித் திறனை வளர்க்கும் 1AC மாகாணப் பாடசாலை.',
     },
     bannerUrl: '/src/assets/images/hero_school_campus_1794888811093.jpg',
+    primaryCtaLabel: {
+      en: 'Explore Academics',
+      ta: 'கல்விப் பிரிவுகளைப் பார்க்க',
+    },
+    secondaryCtaLabel: {
+      en: 'Contact & Location',
+      ta: 'தொடர்பு மற்றும் அமைவிடம்',
+    },
   },
   stats: {
     students: 1248,
@@ -932,6 +944,18 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
     },
   ],
   contact: {
+    kicker: {
+      en: 'Visit & Connect',
+      ta: 'வருகை மற்றும் தொடர்பு',
+    },
+    heading: {
+      en: 'Contact & School Location',
+      ta: 'தொடர்புகள் மற்றும் பாடசாலை அமைவிடம்',
+    },
+    subtitle: {
+      en: 'Reach the school office at Memorial Lane, Manipay for admissions, alumni inquiries, and official correspondence.',
+      ta: 'மாணவர் அனுமதி, பழைய மாணவர் தொடர்புகள் மற்றும் அலுவலகத் தகவல்களுக்கு மானிப்பாய் மெமோரியல் லேன் பாடசாலையைத் தொடர்பு கொள்ளவும்.',
+    },
     address: {
       en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
       ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
@@ -948,6 +972,145 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
     },
     mapEmbedUrl:
       'https://maps.google.com/maps?q=Manipay,+Jaffna,+Sri+Lanka&t=&z=15&ie=UTF8&iwloc=&output=embed',
+    mapTitle: {
+      en: 'J/Manipay Memorial English School Map — Manipay, Jaffna',
+      ta: 'யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலை வரைபடம் — மானிப்பாய், யாழ்ப்பாணம்',
+    },
+    items: [
+      {
+        id: 'cnt-address',
+        type: 'address',
+        label: {
+          en: 'School Address',
+          ta: 'பாடசாலை முகவரி',
+        },
+        value: {
+          en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
+          ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
+        },
+      },
+      {
+        id: 'cnt-phone',
+        type: 'phone',
+        label: {
+          en: 'Office Telephone',
+          ta: 'அலுவலகத் தொலைபேசி',
+        },
+        value: {
+          en: '+94 21 225 5412',
+          ta: '+94 21 225 5412',
+        },
+        href: 'tel:+94212255412',
+      },
+      {
+        id: 'cnt-email',
+        type: 'email',
+        label: {
+          en: 'Official Email',
+          ta: 'மின்னஞ்சல்',
+        },
+        value: {
+          en: 'office@manipaymemorial.sch.lk',
+          ta: 'office@manipaymemorial.sch.lk',
+        },
+        href: 'mailto:office@manipaymemorial.sch.lk',
+      },
+      {
+        id: 'cnt-hours',
+        type: 'hours',
+        label: {
+          en: 'Office Hours',
+          ta: 'அலுவலக நேரம்',
+        },
+        value: {
+          en: 'Monday – Friday · 7:30 AM – 2:30 PM',
+          ta: 'திங்கள் – வெள்ளி · காலை 7.30 – பிற்பகல் 2.30',
+        },
+      },
+    ],
+    socialLinks: [],
+  },
+  footer: {
+    description: {
+      en: 'A 1AC provincial school nurturing bilingual scholarship, ethical leadership, and community service in Manipay, Jaffna.',
+      ta: 'யாழ்ப்பாணம் மானிப்பாயில் இருமொழிக் கல்வி, ஒழுக்க தலைமைத்துவம் மற்றும் சமூக சேவையை வளர்க்கும் 1AC மாகாணப் பாடசாலை.',
+    },
+    showSocialLinks: true,
+    columns: [
+      {
+        id: 'fcol-nav',
+        title: {
+          en: 'Navigation',
+          ta: 'பிரிவுகள்',
+        },
+        layout: 'two-col',
+        links: [
+          { id: 'fl-home', label: { en: 'Home', ta: 'முகப்பு' }, linkType: 'tab', tab: 'home' },
+          { id: 'fl-heritage', label: { en: 'Heritage', ta: 'பாரம்பரியம்' }, linkType: 'tab', tab: 'heritage' },
+          { id: 'fl-academics', label: { en: 'Academics', ta: 'கல்வி' }, linkType: 'tab', tab: 'academics' },
+          { id: 'fl-staff', label: { en: 'Staff', ta: 'ஆசிரியர் குழாம்' }, linkType: 'tab', tab: 'staff' },
+          { id: 'fl-fp', label: { en: 'Former Principals', ta: 'முன்னாள் அதிபர்கள்' }, linkType: 'tab', tab: 'formerPrincipals' },
+          { id: 'fl-results', label: { en: 'Exam Results', ta: 'தேர்வு பெறுபேறுகள்' }, linkType: 'tab', tab: 'examResults' },
+          { id: 'fl-notices', label: { en: 'Notices', ta: 'அறிவிப்புகள்' }, linkType: 'tab', tab: 'notices' },
+          { id: 'fl-ach', label: { en: 'Honours', ta: 'சாதனைகள்' }, linkType: 'tab', tab: 'achievements' },
+          { id: 'fl-gallery', label: { en: 'Gallery', ta: 'படத்தொகுப்பு' }, linkType: 'tab', tab: 'gallery' },
+          { id: 'fl-contact', label: { en: 'Contact', ta: 'தொடர்பு' }, linkType: 'tab', tab: 'contact' },
+        ],
+      },
+      {
+        id: 'fcol-info',
+        title: {
+          en: 'School Details',
+          ta: 'பாடசாலைத் தகவல்கள்',
+        },
+        layout: 'one-col',
+        links: [
+          {
+            id: 'fi-addr',
+            label: {
+              en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
+              ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
+            },
+            linkType: 'text',
+          },
+          {
+            id: 'fi-phone',
+            label: {
+              en: '+94 21 225 5412',
+              ta: '+94 21 225 5412',
+            },
+            linkType: 'url',
+            url: 'tel:+94212255412',
+          },
+          {
+            id: 'fi-email',
+            label: {
+              en: 'office@manipaymemorial.sch.lk',
+              ta: 'office@manipaymemorial.sch.lk',
+            },
+            linkType: 'url',
+            url: 'mailto:office@manipaymemorial.sch.lk',
+          },
+          {
+            id: 'fi-type',
+            label: {
+              en: '1AC Provincial School · Mixed · Bilingual (Tamil & English)',
+              ta: '1AC மாகாணப் பாடசாலை · இருபாலர் · தமிழ் மற்றும் ஆங்கில மொழி',
+            },
+            linkType: 'text',
+          },
+        ],
+      },
+    ],
+    copyrightText: {
+      en: 'J/Manipay Memorial English School. All rights reserved.',
+      ta: 'யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலை. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.',
+    },
+    showYearPrefix: true,
+    adminPortalLabel: {
+      en: 'Admin Portal',
+      ta: 'நிர்வாகப் பக்கம்',
+    },
   },
   brandTheme: {
     primaryColor: '#6B1D2F',

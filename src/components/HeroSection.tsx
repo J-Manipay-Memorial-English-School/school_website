@@ -88,7 +88,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
               className="inline-flex items-center gap-2.5 px-6 py-3 rounded-lg text-sm font-semibold text-white shadow-lg transition-transform duration-150 hover:-translate-y-0.5 whitespace-nowrap shrink-0 cursor-pointer"
               style={{ backgroundColor: 'var(--brand-primary)' }}
             >
-              <span>{strings.hero.exploreAcademics}</span>
+              <span>
+                {pickText(data.hero.primaryCtaLabel, language) || strings.hero.exploreAcademics}
+              </span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </button>
 
@@ -98,7 +100,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white bg-white/12 hover:bg-white/20 backdrop-blur-md border border-white/25 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
             >
               <MapPin className="w-4 h-4" aria-hidden="true" />
-              <span>{strings.hero.contactLocation}</span>
+              <span>
+                {pickText(data.hero.secondaryCtaLabel, language) || strings.hero.contactLocation}
+              </span>
             </button>
           </motion.div>
         </div>

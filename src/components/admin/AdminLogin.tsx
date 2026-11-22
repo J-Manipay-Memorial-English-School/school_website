@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Lock, LogIn } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
+import { pickText } from '../../utils/schoolHelpers';
 import { SchoolCrest } from '../SchoolCrest';
 
 interface AdminLoginProps {
@@ -8,7 +9,7 @@ interface AdminLoginProps {
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToSite }) => {
-  const { loginAdmin, showToast } = useSchoolData();
+  const { data, language, loginAdmin, showToast } = useSchoolData();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -39,7 +40,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onBackToSite }) => {
               Admin CMS Portal
             </h1>
             <p className="text-xs text-stone-500 dark:text-stone-400">
-              J/Manipay Memorial English School
+              {pickText(data.schoolName, language)}
             </p>
           </div>
         </div>

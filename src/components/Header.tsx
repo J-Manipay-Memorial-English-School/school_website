@@ -41,31 +41,33 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Live Announcement Ticker */}
-      <div
-        className="w-full text-white text-xs sm:text-[13px] py-2 border-b border-white/15 overflow-hidden"
-        style={{ backgroundColor: 'var(--brand-primary)' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-4">
-          <span className="font-semibold tracking-wide shrink-0 uppercase text-[11px] opacity-90 border-r border-white/25 pr-3">
-            {strings.header.tickerLabel}
-          </span>
-          <div className="flex-1 overflow-hidden">
-            <div className="animate-marquee">
-              {[...data.tickerAnnouncements, ...data.tickerAnnouncements].map((item, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center whitespace-nowrap mr-12 text-white/95"
-                >
-                  <span>{pickText(item, language)}</span>
-                  <span className="ml-12 opacity-40" aria-hidden="true">
-                    ·
+      {data.tickerAnnouncements.length > 0 && (
+        <div
+          className="w-full text-white text-xs sm:text-[13px] py-2 border-b border-white/15 overflow-hidden"
+          style={{ backgroundColor: 'var(--brand-primary)' }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-4">
+            <span className="font-semibold tracking-wide shrink-0 uppercase text-[11px] opacity-90 border-r border-white/25 pr-3">
+              {pickText(data.headerTickerLabel, language) || strings.header.tickerLabel}
+            </span>
+            <div className="flex-1 overflow-hidden">
+              <div className="animate-marquee">
+                {[...data.tickerAnnouncements, ...data.tickerAnnouncements].map((item, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center whitespace-nowrap mr-12 text-white/95"
+                  >
+                    <span>{pickText(item, language)}</span>
+                    <span className="ml-12 opacity-40" aria-hidden="true">
+                      ·
+                    </span>
                   </span>
-                </span>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Sticky Glassmorphic Navbar */}
       <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#FBF9F5]/90 dark:bg-stone-950/90 border-b border-stone-200/80 dark:border-stone-800/80 transition-colors duration-200">
