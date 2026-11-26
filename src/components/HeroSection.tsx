@@ -4,6 +4,7 @@ import { ArrowRight, MapPin } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { PublicTab } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 import { SchoolCrest } from './SchoolCrest';
 
@@ -52,7 +53,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
               <div className="text-xs sm:text-sm font-semibold text-white/95 tracking-wide">
                 {pickText(data.schoolName, language)}
               </div>
-              <p className="text-xs font-medium tracking-wider text-stone-300 mt-0.5">
+              <p className="text-xs font-medium tracking-wider text-stone-300 mt-0.5 whitespace-pre-line">
                 {pickText(data.hero.eyebrow, language)}
               </p>
             </div>
@@ -62,19 +63,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-3xl sm:text-5xl lg:text-[3.5rem] font-semibold text-white leading-[1.12] tracking-tight mb-5"
+            className="font-display text-3xl sm:text-5xl lg:text-[3.5rem] font-semibold text-white leading-[1.12] tracking-tight mb-5 whitespace-pre-line"
           >
             {pickText(data.hero.title, language)}
           </motion.h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             className="text-base sm:text-lg text-stone-200 leading-relaxed max-w-2xl mb-8"
           >
-            {pickText(data.hero.subtitle, language)}
-          </motion.p>
+            <FormattedText
+              text={pickText(data.hero.subtitle, language)}
+              className="space-y-3"
+            />
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 14 }}

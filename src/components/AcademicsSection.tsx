@@ -4,6 +4,7 @@ import { Check } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickSubjectList, pickText } from '../utils/schoolHelpers';
 import { AcademicProgramIcon } from './AcademicProgramIcon';
+import { FormattedText } from './FormattedText';
 
 export const AcademicsSection: React.FC = () => {
   const { data, language, strings } = useSchoolData();
@@ -55,9 +56,10 @@ export const AcademicsSection: React.FC = () => {
             {headingText}
           </h2>
           {subtitleText && (
-            <p className="text-stone-600 dark:text-stone-300 text-base leading-relaxed">
-              {subtitleText}
-            </p>
+            <FormattedText
+              text={subtitleText}
+              className="space-y-2 text-stone-600 dark:text-stone-300 text-base leading-relaxed"
+            />
           )}
         </div>
 
@@ -154,9 +156,10 @@ export const AcademicsSection: React.FC = () => {
                     )}
 
                     {overviewText && (
-                      <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed mb-5">
-                        {overviewText}
-                      </p>
+                      <FormattedText
+                        text={overviewText}
+                        className="space-y-2.5 text-sm text-stone-600 dark:text-stone-300 leading-relaxed mb-5"
+                      />
                     )}
 
                     {subjectItems.length > 0 && (

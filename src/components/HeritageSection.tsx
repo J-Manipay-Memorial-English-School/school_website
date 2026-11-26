@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { BookOpen, Compass, Pause, Play, RotateCcw, Shield, Sparkles } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickList, pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 
 type HeritageTab = 'history' | 'visionMission' | 'motto' | 'anthem';
 
@@ -163,9 +164,11 @@ export const HeritageSection: React.FC = () => {
               </div>
 
               <div className="lg:col-span-8 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 sm:p-8">
-                <p className="text-base sm:text-lg text-stone-700 dark:text-stone-200 leading-relaxed max-w-3xl first-letter:text-4xl first-letter:font-display first-letter:font-semibold first-letter:float-left first-letter:mr-2.5 first-letter:leading-none first-letter:text-[var(--brand-primary)] dark:first-letter:text-[var(--brand-accent)]">
-                  {pickText(data.heritage.history, language)}
-                </p>
+                <FormattedText
+                  text={pickText(data.heritage.history, language)}
+                  className="space-y-4 text-base sm:text-lg text-stone-700 dark:text-stone-200 leading-relaxed max-w-3xl"
+                  firstParagraphClassName="first-letter:text-4xl first-letter:font-display first-letter:font-semibold first-letter:float-left first-letter:mr-2.5 first-letter:leading-none first-letter:text-[var(--brand-primary)] dark:first-letter:text-[var(--brand-accent)]"
+                />
               </div>
             </motion.div>
           )}
@@ -183,18 +186,20 @@ export const HeritageSection: React.FC = () => {
                 <span className="text-xs uppercase tracking-widest font-semibold text-stone-500 dark:text-stone-400 block mb-3">
                   01 · {strings.heritage.visionLabel}
                 </span>
-                <p className="font-display text-xl sm:text-2xl text-stone-900 dark:text-stone-100 leading-snug">
-                  {pickText(data.heritage.vision, language)}
-                </p>
+                <FormattedText
+                  text={pickText(data.heritage.vision, language)}
+                  className="space-y-3 font-display text-xl sm:text-2xl text-stone-900 dark:text-stone-100 leading-snug"
+                />
               </div>
 
               <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-7 sm:p-9">
                 <span className="text-xs uppercase tracking-widest font-semibold text-stone-500 dark:text-stone-400 block mb-3">
                   02 · {strings.heritage.missionLabel}
                 </span>
-                <p className="text-base sm:text-lg text-stone-700 dark:text-stone-200 leading-relaxed">
-                  {pickText(data.heritage.mission, language)}
-                </p>
+                <FormattedText
+                  text={pickText(data.heritage.mission, language)}
+                  className="space-y-3 text-base sm:text-lg text-stone-700 dark:text-stone-200 leading-relaxed"
+                />
               </div>
             </motion.div>
           )}
@@ -220,9 +225,10 @@ export const HeritageSection: React.FC = () => {
                     “{pickText(data.heritage.motto, language)}”
                   </span>
                 </blockquote>
-                <p className="text-base sm:text-lg text-stone-700 dark:text-stone-300 leading-relaxed">
-                  {pickText(data.heritage.mottoExplanation, language)}
-                </p>
+                <FormattedText
+                  text={pickText(data.heritage.mottoExplanation, language)}
+                  className="space-y-3 text-base sm:text-lg text-stone-700 dark:text-stone-300 leading-relaxed"
+                />
               </div>
             </motion.div>
           )}

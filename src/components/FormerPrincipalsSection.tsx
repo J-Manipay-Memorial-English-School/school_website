@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Calendar, UserRound } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 export const FormerPrincipalsSection: React.FC = () => {
@@ -76,9 +77,10 @@ export const FormerPrincipalsSection: React.FC = () => {
                     </h3>
 
                     {noteText && (
-                      <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
-                        {noteText}
-                      </p>
+                      <FormattedText
+                        text={noteText}
+                        className="space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed"
+                      />
                     )}
                   </div>
                 </motion.article>

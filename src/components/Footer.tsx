@@ -3,6 +3,7 @@ import { ExternalLink, Lock } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { PublicTab } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SchoolCrest } from './SchoolCrest';
 
 interface FooterProps {
@@ -44,9 +45,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenAdmin }) => {
               </span>
             </div>
             {descriptionText && (
-              <p className="text-sm text-stone-400 leading-relaxed max-w-md">
-                {descriptionText}
-              </p>
+              <FormattedText
+                text={descriptionText}
+                className="space-y-2 text-sm text-stone-400 leading-relaxed max-w-md"
+              />
             )}
 
             {footer?.showSocialLinks !== false && socialLinks.length > 0 && (

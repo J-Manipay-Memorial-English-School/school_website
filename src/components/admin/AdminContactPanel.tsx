@@ -581,35 +581,69 @@ export const AdminContactPanel: React.FC = () => {
                 <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
                   Display Value (English)
                 </label>
-                <input
-                  type="text"
-                  value={editingItem.value.en}
-                  onChange={(e) =>
-                    setEditingItem({
-                      ...editingItem,
-                      value: { ...editingItem.value, en: e.target.value },
-                    })
-                  }
-                  placeholder="e.g., +94 21 225 5412"
-                  className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
-                />
+                {editingItem.type === 'address' ||
+                editingItem.type === 'hours' ||
+                editingItem.type === 'other' ? (
+                  <textarea
+                    rows={2}
+                    value={editingItem.value.en}
+                    onChange={(e) =>
+                      setEditingItem({
+                        ...editingItem,
+                        value: { ...editingItem.value, en: e.target.value },
+                      })
+                    }
+                    placeholder="e.g., Memorial Lane, Manipay, Jaffna"
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={editingItem.value.en}
+                    onChange={(e) =>
+                      setEditingItem({
+                        ...editingItem,
+                        value: { ...editingItem.value, en: e.target.value },
+                      })
+                    }
+                    placeholder="e.g., +94 21 225 5412"
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
+                  />
+                )}
               </div>
               <div>
                 <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
                   Display Value (தமிழ் — optional if same)
                 </label>
-                <input
-                  type="text"
-                  value={editingItem.value.ta}
-                  onChange={(e) =>
-                    setEditingItem({
-                      ...editingItem,
-                      value: { ...editingItem.value, ta: e.target.value },
-                    })
-                  }
-                  placeholder="+94 21 225 5412"
-                  className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
-                />
+                {editingItem.type === 'address' ||
+                editingItem.type === 'hours' ||
+                editingItem.type === 'other' ? (
+                  <textarea
+                    rows={2}
+                    value={editingItem.value.ta}
+                    onChange={(e) =>
+                      setEditingItem({
+                        ...editingItem,
+                        value: { ...editingItem.value, ta: e.target.value },
+                      })
+                    }
+                    placeholder="உ-ம்: மெமோரியல் லேன், மானிப்பாய்"
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={editingItem.value.ta}
+                    onChange={(e) =>
+                      setEditingItem({
+                        ...editingItem,
+                        value: { ...editingItem.value, ta: e.target.value },
+                      })
+                    }
+                    placeholder="+94 21 225 5412"
+                    className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900"
+                  />
+                )}
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import { Award, BookOpen, Medal, Trophy } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { AchievementCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 type AchievementFilter = 'All' | AchievementCategory;
@@ -125,9 +126,10 @@ export const AchievementsSection: React.FC = () => {
                       {titleText}
                     </h3>
 
-                    <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed mb-5">
-                      {descriptionText}
-                    </p>
+                    <FormattedText
+                      text={descriptionText}
+                      className="space-y-2.5 text-sm text-stone-600 dark:text-stone-300 leading-relaxed mb-5"
+                    />
                   </div>
 
                   {recipientText && (

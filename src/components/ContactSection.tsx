@@ -12,6 +12,7 @@ import {
 import { useSchoolData } from '../context/SchoolDataContext';
 import { ContactItemType, SocialPlatform } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 
 function getContactItemIcon(type: ContactItemType) {
   switch (type) {
@@ -102,9 +103,10 @@ export const ContactSection: React.FC = () => {
             {headingText}
           </h2>
           {subtitleText && (
-            <p className="text-stone-600 dark:text-stone-300 text-base leading-relaxed">
-              {subtitleText}
-            </p>
+            <FormattedText
+              text={subtitleText}
+              className="space-y-2 text-stone-600 dark:text-stone-300 text-base leading-relaxed"
+            />
           )}
         </div>
 
@@ -140,17 +142,16 @@ export const ContactSection: React.FC = () => {
                           item.type === 'phone' ? 'font-mono-num' : ''
                         } ${item.type === 'email' || item.type === 'website' ? 'break-all' : ''}`}
                       >
-                        <span>{valueText}</span>
+                        <span className="whitespace-pre-line">{valueText}</span>
                         {isExternal && <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-70" aria-hidden="true" />}
                       </a>
                     ) : (
-                      <p
-                        className={`text-sm font-medium text-stone-900 dark:text-stone-100 leading-relaxed break-words ${
+                      <FormattedText
+                        text={valueText}
+                        className={`space-y-1.5 text-sm font-medium text-stone-900 dark:text-stone-100 leading-relaxed break-words ${
                           item.type === 'phone' ? 'font-mono-num' : ''
                         } ${item.type === 'email' ? 'break-all' : ''}`}
-                      >
-                        {valueText}
-                      </p>
+                      />
                     )}
                   </div>
                 );

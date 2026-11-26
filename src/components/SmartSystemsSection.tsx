@@ -10,6 +10,7 @@ import {
 import { useSchoolData } from '../context/SchoolDataContext';
 import { SmartSystemIconKey } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 
 function getSystemIcon(key: SmartSystemIconKey) {
   switch (key) {
@@ -77,9 +78,10 @@ export const SmartSystemsSection: React.FC = () => {
                     {pickText(sys.title, language)}
                   </h3>
 
-                  <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
-                    {pickText(sys.description, language)}
-                  </p>
+                  <FormattedText
+                    text={pickText(sys.description, language)}
+                    className="space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed"
+                  />
                 </div>
 
                 <div className="mt-5 pt-4 border-t border-stone-100 dark:border-stone-800">

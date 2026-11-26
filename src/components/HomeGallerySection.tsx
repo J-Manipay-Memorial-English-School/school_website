@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 export const HomeGallerySection: React.FC = () => {
@@ -181,7 +182,7 @@ export const HomeGallerySection: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.2 }}
-                        className="text-sm sm:text-base font-medium text-white leading-snug max-w-2xl"
+                        className="whitespace-pre-line text-sm sm:text-base font-medium text-white leading-snug max-w-2xl"
                       >
                         {currentCaptionText}
                       </motion.p>
@@ -321,9 +322,10 @@ export const HomeGallerySection: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {activeLightboxCaption && (
-                <p className="text-sm sm:text-base text-stone-200 leading-relaxed">
-                  {activeLightboxCaption}
-                </p>
+                <FormattedText
+                  text={activeLightboxCaption}
+                  className="space-y-2 text-sm sm:text-base text-stone-200 leading-relaxed"
+                />
               )}
             </div>
           </motion.div>

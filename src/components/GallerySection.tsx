@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Expand, Images, X } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { GalleryCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 type GalleryFilter = 'All' | GalleryCategory;
@@ -172,7 +173,7 @@ export const GallerySection: React.FC = () => {
                       </>
                     )}
                   </div>
-                  <p className="text-sm font-medium text-stone-800 dark:text-stone-100 leading-snug line-clamp-2">
+                  <p className="whitespace-pre-line text-sm font-medium text-stone-800 dark:text-stone-100 leading-snug line-clamp-2">
                     {captionText}
                   </p>
                 </div>
@@ -266,9 +267,10 @@ export const GallerySection: React.FC = () => {
               className="max-w-4xl w-full mx-auto text-center text-white space-y-3"
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="text-sm sm:text-base text-stone-200 leading-relaxed">
-                {pickText(activeAlbum.caption, language)}
-              </p>
+              <FormattedText
+                text={pickText(activeAlbum.caption, language)}
+                className="space-y-2 text-sm sm:text-base text-stone-200 leading-relaxed"
+              />
 
               {albumPhotos.length > 1 && (
                 <div className="flex items-center justify-center gap-2 overflow-x-auto py-1">

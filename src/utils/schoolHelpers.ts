@@ -1,16 +1,35 @@
 import { BilingualText, Language } from '../types/school';
 
 /**
+ * Normalizes Windows/legacy line endings (\r\n, \r) to Unix \n while preserving all line breaks.
+ */
+export function normalizeLineBreaks(text: string): string {
+  return text.replace(/\r\n?/g, '\n');
+}
+
+/**
+ * Splits multi-line CMS text on blank lines (\n\n) into distinct paragraph blocks,
+ * preserving single line breaks (\n) inside each block.
+ */
+export function splitParagraphs(text: string | undefined): string[] {
+  if (!text) return [];
+  return normalizeLineBreaks(text)
+    .split(/\n[ \t]*\n+/)
+    .map((block) => block.replace(/^\n+|\n+$/g, ''))
+    .filter((block) => block.trim().length > 0);
+}
+
+/**
  * Smart bilingual selector:
  * - Returns text in the active language if non-empty.
  * - Falls back to the other language if only one language was entered by admin.
  */
 export function pickText(text: BilingualText | undefined, lang: Language): string {
   if (!text) return '';
-  const primary = text[lang]?.trim();
+  const primary = text[lang] ? normalizeLineBreaks(text[lang]).trim() : '';
   if (primary) return primary;
   const fallback: Language = lang === 'en' ? 'ta' : 'en';
-  return text[fallback]?.trim() || '';
+  return text[fallback] ? normalizeLineBreaks(text[fallback]).trim() : '';
 }
 
 /**
@@ -23,10 +42,14 @@ export function pickList(
   lang: Language
 ): string[] {
   if (!lists) return [];
-  const primary = (lists[lang] || []).map((item) => item.trim()).filter(Boolean);
+  const primary = (lists[lang] || [])
+    .map((item) => normalizeLineBreaks(item).trim())
+    .filter(Boolean);
   if (primary.length > 0) return primary;
   const fallback: Language = lang === 'en' ? 'ta' : 'en';
-  return (lists[fallback] || []).map((item) => item.trim()).filter(Boolean);
+  return (lists[fallback] || [])
+    .map((item) => normalizeLineBreaks(item).trim())
+    .filter(Boolean);
 }
 
 /**
@@ -52,12 +75,13 @@ export function pickSubjectList(
 }
 
 /**
- * Normalizes a bilingual form input without forcing both languages.
+ * Normalizes a bilingual form input without forcing both languages,
+ * preserving internal line breaks and paragraph spacing.
  */
 export function cleanBilingual(text: BilingualText | undefined): BilingualText {
   return {
-    en: text?.en?.trim() || '',
-    ta: text?.ta?.trim() || '',
+    en: text?.en ? normalizeLineBreaks(text.en).trim() : '',
+    ta: text?.ta ? normalizeLineBreaks(text.ta).trim() : '',
   };
 }
 

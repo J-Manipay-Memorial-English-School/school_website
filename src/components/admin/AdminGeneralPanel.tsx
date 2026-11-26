@@ -11,7 +11,12 @@ import {
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { BilingualText, HeritageConfig, HeroConfig } from '../../types/school';
-import { cleanBilingual, hasAnyText } from '../../utils/schoolHelpers';
+import {
+  cleanBilingual,
+  hasAnyText,
+  normalizeLineBreaks,
+  splitParagraphs,
+} from '../../utils/schoolHelpers';
 import { SafeImage } from '../SafeImage';
 import { SchoolCrest } from '../SchoolCrest';
 
@@ -51,6 +56,12 @@ export const AdminGeneralPanel: React.FC = () => {
   const [schoolType, setSchoolType] = useState<BilingualText>(data.contact.schoolType);
   const [hero, setHero] = useState<HeroConfig>(data.hero);
   const [heritage, setHeritage] = useState<HeritageConfig>(data.heritage);
+  const [anthemTextEn, setAnthemTextEn] = useState<string>(() =>
+    (data.heritage.anthemVerses?.en || []).join('\n\n')
+  );
+  const [anthemTextTa, setAnthemTextTa] = useState<string>(() =>
+    (data.heritage.anthemVerses?.ta || []).join('\n\n')
+  );
 
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -70,6 +81,8 @@ export const AdminGeneralPanel: React.FC = () => {
     setSchoolType(data.contact.schoolType);
     setHero(data.hero);
     setHeritage(data.heritage);
+    setAnthemTextEn((data.heritage.anthemVerses?.en || []).join('\n\n'));
+    setAnthemTextTa((data.heritage.anthemVerses?.ta || []).join('\n\n'));
   }, [
     data.schoolName,
     data.shortName,
@@ -151,6 +164,10 @@ export const AdminGeneralPanel: React.FC = () => {
           mission: cleanBilingual(heritage.mission),
           history: cleanBilingual(heritage.history),
           anthemTitle: cleanBilingual(heritage.anthemTitle),
+          anthemVerses: {
+            en: splitParagraphs(normalizeLineBreaks(anthemTextEn)),
+            ta: splitParagraphs(normalizeLineBreaks(anthemTextTa)),
+          },
         },
       });
     } catch {
@@ -301,8 +318,8 @@ export const AdminGeneralPanel: React.FC = () => {
             <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
               Primary Address / Location (English)
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={2}
               value={primaryAddress.en}
               onChange={(e) => setPrimaryAddress({ ...primaryAddress, en: e.target.value })}
               placeholder="Memorial Lane, Manipay, Jaffna 40000, Sri Lanka"
@@ -313,8 +330,8 @@ export const AdminGeneralPanel: React.FC = () => {
             <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
               Primary Address / Location (தமிழ்)
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={2}
               value={primaryAddress.ta}
               onChange={(e) => setPrimaryAddress({ ...primaryAddress, ta: e.target.value })}
               placeholder="மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை"
@@ -998,16 +1015,8 @@ export const AdminGeneralPanel: React.FC = () => {
             </label>
             <textarea
               rows={6}
-              value={heritage.anthemVerses.en.join('\n\n')}
-              onChange={(e) =>
-                setHeritage({
-                  ...heritage,
-                  anthemVerses: {
-                    ...heritage.anthemVerses,
-                    en: e.target.value.split(/\n\s*\n/).filter(Boolean),
-                  },
-                })
-              }
+              value={anthemTextEn}
+              onChange={(e) => setAnthemTextEn(e.target.value)}
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
           </div>
@@ -1017,16 +1026,8 @@ export const AdminGeneralPanel: React.FC = () => {
             </label>
             <textarea
               rows={6}
-              value={heritage.anthemVerses.ta.join('\n\n')}
-              onChange={(e) =>
-                setHeritage({
-                  ...heritage,
-                  anthemVerses: {
-                    ...heritage.anthemVerses,
-                    ta: e.target.value.split(/\n\s*\n/).filter(Boolean),
-                  },
-                })
-              }
+              value={anthemTextTa}
+              onChange={(e) => setAnthemTextTa(e.target.value)}
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
           </div>

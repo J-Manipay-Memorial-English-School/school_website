@@ -4,6 +4,7 @@ import { ArrowUpRight, Download, FileText, Paperclip, Pin, Search, X } from 'luc
 import { useSchoolData } from '../context/SchoolDataContext';
 import { NoticeAttachment, NoticeCategory, NoticeItem } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 
 type NoticeFilter = 'All' | NoticeCategory;
 
@@ -174,9 +175,10 @@ export const NoticesSection: React.FC<NoticesSectionProps> = ({
                     <h3 className="font-display text-xl font-semibold text-stone-900 dark:text-stone-50 mb-1.5">
                       {titleText}
                     </h3>
-                    <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
-                      {summaryText}
-                    </p>
+                    <FormattedText
+                      text={summaryText}
+                      className="space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed"
+                    />
                   </div>
 
                   <div className="shrink-0 flex flex-wrap items-center gap-2">
@@ -257,13 +259,10 @@ export const NoticesSection: React.FC<NoticesSectionProps> = ({
                   {pickText(selectedNotice.title, language)}
                 </h3>
 
-                <div className="space-y-4 text-[15px] sm:text-base text-stone-700 dark:text-stone-300 leading-relaxed">
-                  {pickText(selectedNotice.content, language)
-                    .split('\n\n')
-                    .map((para, idx) => (
-                      <p key={idx}>{para}</p>
-                    ))}
-                </div>
+                <FormattedText
+                  text={pickText(selectedNotice.content, language)}
+                  className="space-y-4 text-[15px] sm:text-base text-stone-700 dark:text-stone-300 leading-relaxed"
+                />
 
                 {selectedNotice.attachment && (
                   <div className="mt-8 p-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#FBF9F5] dark:bg-stone-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

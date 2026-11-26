@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 export const PrincipalDesk: React.FC = () => {
@@ -49,9 +50,11 @@ export const PrincipalDesk: React.FC = () => {
                 </div>
 
                 <div className="max-w-2xl space-y-4 text-stone-700 dark:text-stone-300 leading-relaxed text-[15px] sm:text-base">
-                  <p className="first-letter:text-4xl first-letter:font-display first-letter:font-semibold first-letter:float-left first-letter:mr-2.5 first-letter:leading-none first-letter:text-[var(--brand-primary)] dark:first-letter:text-[var(--brand-accent)]">
-                    {pickText(data.principal.summaryMessage, language)}
-                  </p>
+                  <FormattedText
+                    text={pickText(data.principal.summaryMessage, language)}
+                    className="space-y-4"
+                    firstParagraphClassName="first-letter:text-4xl first-letter:font-display first-letter:font-semibold first-letter:float-left first-letter:mr-2.5 first-letter:leading-none first-letter:text-[var(--brand-primary)] dark:first-letter:text-[var(--brand-accent)]"
+                  />
 
                   <AnimatePresence initial={false}>
                     {expanded && (
@@ -60,13 +63,12 @@ export const PrincipalDesk: React.FC = () => {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.25 }}
-                        className="overflow-hidden space-y-4 pt-1"
+                        className="overflow-hidden pt-1"
                       >
-                        {pickText(data.principal.fullMessage, language)
-                          .split('\n\n')
-                          .map((paragraph, idx) => (
-                            <p key={idx}>{paragraph}</p>
-                          ))}
+                        <FormattedText
+                          text={pickText(data.principal.fullMessage, language)}
+                          className="space-y-4"
+                        />
                       </motion.div>
                     )}
                   </AnimatePresence>

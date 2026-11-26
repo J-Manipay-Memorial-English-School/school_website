@@ -4,6 +4,7 @@ import { Award, Camera, ChevronLeft, ChevronRight, Sparkles, UserRound, X } from
 import { useSchoolData } from '../context/SchoolDataContext';
 import { ExamCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
+import { FormattedText } from './FormattedText';
 import { SafeImage } from './SafeImage';
 
 type FilterCategory = 'All' | ExamCategory;
@@ -122,9 +123,10 @@ export const ExamResultsSection: React.FC = () => {
                         {categoryTitle}
                       </h3>
                       {summaryText && (
-                        <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl pt-1">
-                          {summaryText}
-                        </p>
+                        <FormattedText
+                          text={summaryText}
+                          className="space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl pt-1"
+                        />
                       )}
                     </div>
 
