@@ -158,6 +158,11 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
     principal: {
       ...defaults.principal,
       ...(parsed.principal || {}),
+      tenure:
+        parsed.principal?.tenure &&
+        (parsed.principal.tenure.en?.trim() || parsed.principal.tenure.ta?.trim())
+          ? parsed.principal.tenure
+          : defaults.principal.tenure,
     },
     heritage: {
       ...defaults.heritage,
@@ -212,10 +217,24 @@ async function parseErrorResponse(res: Response, fallbackMessage: string): Promi
 }
 
 export async function fetchSchoolData(): Promise<SchoolData> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+
   try {
-    const res = await fetch('/api/school-data', { cache: 'no-store' });
+    const res = await fetch(`/api/school-data?_ts=${Date.now()}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+      },
+      signal: controller.signal,
+    });
+
     if (res.ok) {
-      const json = (await res.json()) as { data?: Partial<SchoolData> | null };
+      const json = (await res.json()) as {
+        data?: Partial<SchoolData> | null;
+        persistence?: string;
+      };
       if (json?.data && typeof json.data === 'object') {
         const normalized = normalizeSchoolData(json.data);
         try {
@@ -225,17 +244,25 @@ export async function fetchSchoolData(): Promise<SchoolData> {
         }
         return normalized;
       }
+      if (json?.persistence === 'kv' && json.data === null) {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch {
+          // ignore
+        }
+        return cloneDefaultData();
+      }
     }
   } catch {
-    // Fall back to local cache if API endpoint is unavailable
+    // Fall back to local cache only if API endpoint is unreachable
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      const initial = cloneDefaultData();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
-      return initial;
+      return cloneDefaultData();
     }
     const parsed = JSON.parse(raw) as Partial<SchoolData>;
     return normalizeSchoolData(parsed);

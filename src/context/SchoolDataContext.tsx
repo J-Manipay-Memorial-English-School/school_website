@@ -223,22 +223,24 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [themeMode]);
 
-  // Apply Language preference & sync document title & favicon
+  // Apply Language preference & sync document title
   useEffect(() => {
     document.documentElement.lang = language === 'ta' ? 'ta' : 'en';
-    const resolvedName = pickText(data.schoolName, language);
-    if (resolvedName) {
-      document.title = resolvedName;
-    }
     try {
       localStorage.setItem(LANG_KEY, language);
     } catch {
       // ignore
     }
-  }, [language, data.schoolName]);
+    if (isLoading) return;
+    const resolvedName = pickText(data.schoolName, language);
+    if (resolvedName) {
+      document.title = resolvedName;
+    }
+  }, [language, data.schoolName, isLoading]);
 
-  // Sync browser favicon / tab icon with the school crest logo
+  // Sync browser favicon / tab icon with the school crest logo once loaded
   useEffect(() => {
+    if (isLoading) return;
     const logoHref =
       data.schoolLogoUrl?.trim() || DEFAULT_SCHOOL_DATA.schoolLogoUrl;
     if (!logoHref) return;
@@ -250,10 +252,11 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       document.head.appendChild(iconLink);
     }
     iconLink.href = logoHref;
-  }, [data.schoolLogoUrl]);
+  }, [data.schoolLogoUrl, isLoading]);
 
-  // Apply Live Brand Color Customizer CSS custom properties
+  // Apply Live Brand Color Customizer CSS custom properties once loaded
   useEffect(() => {
+    if (isLoading) return;
     const root = document.documentElement;
     const primary = data.brandTheme.primaryColor || '#6B1D2F';
     const accent = data.brandTheme.accentColor || '#B47B2B';
@@ -262,7 +265,7 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     root.style.setProperty('--brand-accent', accent);
     root.style.setProperty('--brand-primary-soft', hexToRgba(primary, themeMode === 'dark' ? 0.2 : 0.08));
     root.style.setProperty('--brand-accent-soft', hexToRgba(accent, themeMode === 'dark' ? 0.22 : 0.12));
-  }, [data.brandTheme, themeMode]);
+  }, [data.brandTheme, themeMode, isLoading]);
 
   const setLanguage = useCallback((lang: Language) => setLanguageState(lang), []);
   const toggleLanguage = useCallback(() => {

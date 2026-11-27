@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { DEFAULT_SCHOOL_DATA } from '../data/defaultSchoolData';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickText } from '../utils/schoolHelpers';
 import { FormattedText } from './FormattedText';
@@ -11,6 +12,11 @@ export const PrincipalDesk: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
 
   const principalName = pickText(data.principal.name, language);
+  const credentialsText = pickText(data.principal.credentials, language);
+  const tenureText =
+    pickText(data.principal.tenure, language) ||
+    pickText(DEFAULT_SCHOOL_DATA.principal.tenure, language);
+  const subtitleLine = [credentialsText, tenureText].filter(Boolean).join(' · ');
   const fullMessageText = pickText(data.principal.fullMessage, language).trim();
 
   return (
@@ -49,10 +55,11 @@ export const PrincipalDesk: React.FC = () => {
                 <div className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                   {principalName}
                 </div>
-                <div className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">
-                  {pickText(data.principal.credentials, language)} ·{' '}
-                  {pickText(data.principal.tenure, language)}
-                </div>
+                {subtitleLine && (
+                  <div className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5">
+                    {subtitleLine}
+                  </div>
+                )}
               </div>
 
               <div className="max-w-2xl space-y-4 text-stone-700 dark:text-stone-300 leading-relaxed text-[15px] sm:text-base">

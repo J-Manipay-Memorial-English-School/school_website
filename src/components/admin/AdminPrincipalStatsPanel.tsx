@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowDown, ArrowUp, Plus, Save, Trash2, Upload, X } from 'lucide-react';
+import { DEFAULT_SCHOOL_DATA } from '../../data/defaultSchoolData';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { ClassStrengthItem, PrincipalConfig, SchoolStats } from '../../types/school';
-import { hasAnyText } from '../../utils/schoolHelpers';
+import { cleanBilingual, hasAnyText } from '../../utils/schoolHelpers';
 import { ProfileAvatar } from '../ProfileAvatar';
 import { DefaultAvatarPicker } from './DefaultAvatarPicker';
 
@@ -96,10 +97,21 @@ export const AdminPrincipalStatsPanel: React.FC = () => {
       showToast('Each class row must have a grade name in English or Tamil.', 'error');
       return;
     }
+    const cleanedTenure = cleanBilingual(principal.tenure);
+    const normalizedPrincipal: PrincipalConfig = {
+      ...principal,
+      name: cleanBilingual(principal.name),
+      credentials: cleanBilingual(principal.credentials),
+      tenure: hasAnyText(cleanedTenure) ? cleanedTenure : DEFAULT_SCHOOL_DATA.principal.tenure,
+      summaryMessage: cleanBilingual(principal.summaryMessage),
+      fullMessage: cleanBilingual(principal.fullMessage),
+      photoUrl: principal.photoUrl.trim(),
+    };
+
     setSaving(true);
     try {
       await updatePrincipalAndStats({
-        principal,
+        principal: normalizedPrincipal,
         stats: {
           ...stats,
           students: strengthTotals.total,
@@ -488,6 +500,49 @@ export const AdminPrincipalStatsPanel: React.FC = () => {
                       credentials: { ...principal.credentials, ta: e.target.value },
                     })
                   }
+                  className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
+                  Serving Period / Caption (English)
+                </label>
+                <input
+                  type="text"
+                  value={principal.tenure?.en || ''}
+                  onChange={(e) =>
+                    setPrincipal({
+                      ...principal,
+                      tenure: {
+                        en: e.target.value,
+                        ta: principal.tenure?.ta || '',
+                      },
+                    })
+                  }
+                  placeholder={DEFAULT_SCHOOL_DATA.principal.tenure.en}
+                  className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-stone-600 dark:text-stone-300 mb-1">
+                  Serving Period / Caption (தமிழ்)
+                </label>
+                <input
+                  type="text"
+                  value={principal.tenure?.ta || ''}
+                  onChange={(e) =>
+                    setPrincipal({
+                      ...principal,
+                      tenure: {
+                        en: principal.tenure?.en || '',
+                        ta: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder={DEFAULT_SCHOOL_DATA.principal.tenure.ta}
                   className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
                 />
               </div>

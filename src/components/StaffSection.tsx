@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { Award, User } from 'lucide-react';
+import { DEFAULT_SCHOOL_DATA } from '../data/defaultSchoolData';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { StaffSectionCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
@@ -68,7 +69,8 @@ export const StaffSection: React.FC = () => {
                 {pickText(data.principal.credentials, language)}
               </p>
               <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
-                {pickText(data.principal.tenure, language)}
+                {pickText(data.principal.tenure, language) ||
+                  pickText(DEFAULT_SCHOOL_DATA.principal.tenure, language)}
               </p>
             </div>
           </div>

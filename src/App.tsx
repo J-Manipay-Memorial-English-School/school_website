@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { Loader2 } from 'lucide-react';
 import { AcademicsSection } from './components/AcademicsSection';
 import { AchievementsSection } from './components/AchievementsSection';
 import { AdminPortal } from './components/admin/AdminPortal';
@@ -20,10 +21,11 @@ import { SmartSystemsSection } from './components/SmartSystemsSection';
 import { StaffSection } from './components/StaffSection';
 import { StatsBar } from './components/StatsBar';
 import { ToastContainer } from './components/ToastContainer';
-import { SchoolDataProvider } from './context/SchoolDataContext';
+import { SchoolDataProvider, useSchoolData } from './context/SchoolDataContext';
 import { NoticeItem, PublicTab } from './types/school';
 
 function AppShell() {
+  const { isLoading, language } = useSchoolData();
   const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => {
     return window.location.pathname.replace(/\/+$/, '') === '/admin';
   });
@@ -72,6 +74,22 @@ function AppShell() {
     setIsAdminRoute(false);
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100 px-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Loader2
+            className="w-8 h-8 animate-spin text-[var(--brand-primary)] dark:text-[var(--brand-accent)]"
+            aria-hidden="true"
+          />
+          <p className="text-sm font-medium text-stone-600 dark:text-stone-300">
+            {language === 'ta' ? 'தகவல்கள் ஏற்றப்படுகின்றன...' : 'Loading latest school portal...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -23,7 +23,11 @@ export function jsonResponse(body: unknown, status = 200): Response {
     status,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'CDN-Cache-Control': 'no-store',
+      'Cloudflare-CDN-Cache-Control': 'no-store',
     },
   });
 }
