@@ -40,6 +40,8 @@ export interface HeroConfig {
   secondaryCtaLabel?: BilingualText;
 }
 
+export type DefaultAvatarKey = 'silhouette' | 'male' | 'female' | 'educator' | 'initials';
+
 export interface HeritageConfig {
   foundedYear: string;
   foundedBy: BilingualText;
@@ -53,6 +55,10 @@ export interface HeritageConfig {
     en: string[];
     ta: string[];
   };
+  anthemAudioUrl?: {
+    en?: string;
+    ta?: string;
+  };
 }
 
 export interface PrincipalConfig {
@@ -60,6 +66,7 @@ export interface PrincipalConfig {
   credentials: BilingualText;
   tenure: BilingualText;
   photoUrl: string;
+  defaultAvatar?: DefaultAvatarKey;
   summaryMessage: BilingualText;
   fullMessage: BilingualText;
 }
@@ -124,6 +131,7 @@ export interface StaffMember {
   qualifications?: BilingualText;
   category: StaffSectionCategory;
   photoUrl: string;
+  defaultAvatar?: DefaultAvatarKey;
 }
 
 export interface FormerPrincipal {
@@ -132,6 +140,7 @@ export interface FormerPrincipal {
   tenure: BilingualText;
   note?: BilingualText;
   photoUrl?: string;
+  defaultAvatar?: DefaultAvatarKey;
 }
 
 export type ExamCategory = 'Scholarship' | 'O/L' | 'A/L';
@@ -141,6 +150,7 @@ export interface ExamTopPerformer {
   name: BilingualText;
   achievement: BilingualText;
   photoUrl?: string;
+  defaultAvatar?: DefaultAvatarKey;
 }
 
 export interface ExamResultItem {

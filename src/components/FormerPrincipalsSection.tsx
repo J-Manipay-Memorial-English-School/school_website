@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Calendar, UserRound } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickText } from '../utils/schoolHelpers';
 import { FormattedText } from './FormattedText';
-import { SafeImage } from './SafeImage';
+import { ProfileAvatar } from './ProfileAvatar';
 
 export const FormerPrincipalsSection: React.FC = () => {
   const { data, language, strings } = useSchoolData();
@@ -33,59 +33,76 @@ export const FormerPrincipalsSection: React.FC = () => {
             {strings.formerPrincipals.emptyState}
           </div>
         ) : (
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-            {list.map((principal, idx) => {
-              const nameText = pickText(principal.name, language);
-              const tenureText = pickText(principal.tenure, language);
-              const noteText = pickText(principal.note, language);
+          /* Distinct Chronological Vertical Timeline / Editorial Heritage Roll */
+          <div className="max-w-4xl mx-auto relative">
+            {/* Subtle vertical chronological rail */}
+            <div
+              className="hidden sm:block absolute left-6 top-6 bottom-6 w-px bg-stone-200 dark:bg-stone-800"
+              aria-hidden="true"
+            />
 
-              return (
-                <motion.article
-                  key={principal.id}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.35, delay: idx * 0.04 }}
-                  className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 sm:p-7 flex items-start gap-5 shadow-xs hover:-translate-y-0.5 transition-transform duration-200"
-                >
-                  {/* Optional Portrait Photo or Dignified Neutral Person Silhouette */}
-                  <div className="w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800/80 shrink-0 flex items-center justify-center">
-                    {principal.photoUrl ? (
-                      <SafeImage
-                        src={principal.photoUrl}
-                        alt={nameText}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex flex-col items-center justify-center text-stone-400 dark:text-stone-500"
-                        aria-label={nameText}
-                      >
-                        <UserRound className="w-9 h-9 stroke-[1.5]" aria-hidden="true" />
-                      </div>
-                    )}
-                  </div>
+            <ol className="divide-y divide-stone-200/80 dark:divide-stone-800/80">
+              {list.map((principal, idx) => {
+                const nameText = pickText(principal.name, language);
+                const tenureText = pickText(principal.tenure, language);
+                const noteText = pickText(principal.note, language);
+                const sequenceNumber = String(idx + 1).padStart(2, '0');
 
-                  <div className="min-w-0 flex-1">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold font-mono-num bg-stone-100 dark:bg-stone-800 text-[var(--brand-primary)] dark:text-[var(--brand-accent)] border border-stone-200/80 dark:border-stone-700 mb-2.5">
-                      <Calendar className="w-3 h-3 shrink-0" aria-hidden="true" />
-                      <span>{tenureText}</span>
+                return (
+                  <motion.li
+                    key={principal.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-30px' }}
+                    transition={{ duration: 0.22, delay: Math.min(idx * 0.025, 0.16) }}
+                    className="relative sm:pl-16 py-6 sm:py-7 group"
+                  >
+                    {/* Chronological Sequence Medallion on the timeline rail */}
+                    <div
+                      className="hidden sm:flex absolute left-1.5 top-7 w-9 h-9 rounded-full items-center justify-center font-mono-num text-xs font-semibold bg-[#FBF9F5] dark:bg-stone-950 border border-stone-300 dark:border-stone-700 text-[var(--brand-primary)] dark:text-[var(--brand-accent)] shadow-2xs transition-colors duration-150 group-hover:border-[var(--brand-primary)] dark:group-hover:border-[var(--brand-accent)]"
+                      aria-hidden="true"
+                    >
+                      {sequenceNumber}
                     </div>
 
-                    <h3 className="font-display text-xl font-semibold text-stone-900 dark:text-stone-50 leading-snug mb-1.5">
-                      {nameText}
-                    </h3>
+                    <div className="flex items-start gap-4 sm:gap-5 px-3 py-2.5 -mx-3 rounded-xl transition-colors duration-150 group-hover:bg-white/80 dark:group-hover:bg-stone-900/50">
+                      {/* Circular Portrait Medallion with Selectable Default Avatar Fallback */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden ring-2 ring-stone-200/90 dark:ring-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0 shadow-2xs">
+                        <ProfileAvatar
+                          photoUrl={principal.photoUrl}
+                          defaultAvatar={principal.defaultAvatar}
+                          name={nameText}
+                          iconSizeClass="w-7 h-7"
+                        />
+                      </div>
 
-                    {noteText && (
-                      <FormattedText
-                        text={noteText}
-                        className="space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed"
-                      />
-                    )}
-                  </div>
-                </motion.article>
-              );
-            })}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
+                          <span className="sm:hidden font-mono-num text-[11px] font-semibold text-stone-400 dark:text-stone-500">
+                            #{sequenceNumber}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold font-mono-num tracking-wide text-[var(--brand-primary)] dark:text-[var(--brand-accent)]">
+                            <Calendar className="w-3 h-3 shrink-0" aria-hidden="true" />
+                            <span>{tenureText}</span>
+                          </span>
+                        </div>
+
+                        <h3 className="font-display text-xl sm:text-[1.35rem] font-semibold text-stone-900 dark:text-stone-50 leading-snug">
+                          {nameText}
+                        </h3>
+
+                        {noteText && (
+                          <FormattedText
+                            text={noteText}
+                            className="mt-1.5 space-y-2 text-sm text-stone-600 dark:text-stone-300 leading-relaxed"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </motion.li>
+                );
+              })}
+            </ol>
           </div>
         )}
       </div>

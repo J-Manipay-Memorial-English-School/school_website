@@ -57,7 +57,7 @@ export const AchievementsSection: React.FC = () => {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setFilter(cat)}
-                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 ${
                     active
                       ? 'bg-white dark:bg-stone-800 text-stone-950 dark:text-white shadow-sm'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
@@ -70,7 +70,7 @@ export const AchievementsSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {filtered.map((item, idx) => {
             const Icon = getIcon(item.category);
             const titleText = pickText(item.title, language);
@@ -81,11 +81,10 @@ export const AchievementsSection: React.FC = () => {
             return (
               <motion.article
                 key={item.id}
-                layout
-                initial={{ opacity: 0, y: 14 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.35, delay: idx * 0.04 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{ duration: 0.22, delay: Math.min(idx * 0.025, 0.14) }}
                 className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden flex flex-col"
               >
                 {item.photoUrl && (

@@ -6,8 +6,8 @@ import { createServer as createViteServer } from 'vite';
 
 const PORT = Number(process.env.PORT) || 3000;
 const ALLOWED_DATA_URL_PREFIX =
-  /^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml)|application\/pdf);base64,/i;
-const MAX_UPLOAD_DATA_URL_LENGTH = 8 * 1024 * 1024;
+  /^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml)|application\/pdf|audio\/(mpeg|mp3|wav|x-wav|wave|ogg|mp4|x-m4a|m4a|aac|webm));base64,/i;
+const MAX_UPLOAD_DATA_URL_LENGTH = 16 * 1024 * 1024;
 
 let inMemorySchoolData: Record<string, unknown> | null = null;
 
@@ -47,7 +47,7 @@ function requireAdminPassword(req: Request, res: Response, next: NextFunction): 
 
 async function startServer(): Promise<void> {
   const app = express();
-  app.use(express.json({ limit: '10mb' }));
+  app.use(express.json({ limit: '20mb' }));
 
   app.use('/api', (req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
@@ -105,7 +105,8 @@ async function startServer(): Promise<void> {
     const prefixMatch = ALLOWED_DATA_URL_PREFIX.exec(dataUrl);
     if (!dataUrl || !prefixMatch) {
       res.status(400).json({
-        error: 'Invalid file format. Only image and PDF data uploads are permitted.',
+        error:
+          'Invalid file format. Only image, PDF, and audio (MP3/WAV/M4A/OGG/AAC) uploads are permitted.',
       });
       return;
     }
@@ -118,6 +119,7 @@ async function startServer(): Promise<void> {
     const detectedMimeType = prefixMatch[1].toLowerCase();
     const resolvedMimeType = rawMimeType || detectedMimeType;
     const isPdf = detectedMimeType === 'application/pdf';
+    const isAudio = detectedMimeType.startsWith('audio/');
     const isSvg = detectedMimeType === 'image/svg+xml';
 
     const cloudName =
@@ -170,7 +172,7 @@ async function startServer(): Promise<void> {
     formData.append('public_id', publicId);
     formData.append('signature', signature);
 
-    const resourceType = isPdf ? 'raw' : 'image';
+    const resourceType = isPdf ? 'raw' : isAudio ? 'video' : 'image';
     const uploadUrl = `https://api.cloudinary.com/v1_1/${encodeURIComponent(
       cloudName
     )}/${resourceType}/upload`;
@@ -195,7 +197,7 @@ async function startServer(): Promise<void> {
       }
 
       const finalUrl =
-        !isPdf && !isSvg && secureUrl.includes('/image/upload/')
+        !isPdf && !isAudio && !isSvg && secureUrl.includes('/image/upload/')
           ? secureUrl.replace('/image/upload/', '/image/upload/f_auto,q_auto/')
           : secureUrl;
 

@@ -6,13 +6,14 @@ import {
   Plus,
   Trash2,
   Upload,
-  UserRound,
   X,
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { ExamCategory, ExamResultItem, ExamTopPerformer } from '../../types/school';
 import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
+import { ProfileAvatar } from '../ProfileAvatar';
 import { SafeImage } from '../SafeImage';
+import { DefaultAvatarPicker } from './DefaultAvatarPicker';
 
 export const AdminExamResultsPanel: React.FC = () => {
   const { data, upsertExamResult, deleteExamResult, uploadAdminImage, showToast } =
@@ -43,6 +44,7 @@ export const AdminExamResultsPanel: React.FC = () => {
       name: { en: '', ta: '' },
       achievement: { en: '', ta: '' },
       photoUrl: '',
+      defaultAvatar: 'silhouette',
     };
     setEditingResult({
       ...editingResult,
@@ -338,40 +340,48 @@ export const AdminExamResultsPanel: React.FC = () => {
                     key={tp.id}
                     className="rounded-xl border border-stone-200 dark:border-stone-800 bg-[#FBF9F5] dark:bg-stone-950 p-4 flex flex-col lg:flex-row lg:items-start gap-4"
                   >
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
-                        {tp.photoUrl ? (
-                          <SafeImage
-                            src={tp.photoUrl}
-                            alt={`Student ${idx + 1}`}
-                            className="w-full h-full object-cover object-top"
+                    <div className="flex flex-col gap-3 shrink-0 lg:w-64">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center shrink-0 text-xs">
+                          <ProfileAvatar
+                            photoUrl={tp.photoUrl}
+                            defaultAvatar={tp.defaultAvatar}
+                            name={pickText(tp.name, 'en') || `Student ${idx + 1}`}
+                            iconSizeClass="w-6 h-6"
                           />
-                        ) : (
-                          <UserRound className="w-6 h-6 text-stone-400" aria-hidden="true" />
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setActivePerformerId(tp.id);
-                            performerPhotoInputRef.current?.click();
-                          }}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
-                        >
-                          <Upload className="w-3 h-3" aria-hidden="true" />
-                          <span>{tp.photoUrl ? 'Change Photo' : 'Upload Photo'}</span>
-                        </button>
-                        {tp.photoUrl && (
+                        </div>
+                        <div className="flex flex-col gap-1">
                           <button
                             type="button"
-                            onClick={() => updatePerformer(tp.id, { photoUrl: '' })}
-                            className="text-[11px] text-red-600 dark:text-red-400 hover:underline text-left cursor-pointer"
+                            onClick={() => {
+                              setActivePerformerId(tp.id);
+                              performerPhotoInputRef.current?.click();
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
                           >
-                            Remove photo
+                            <Upload className="w-3 h-3" aria-hidden="true" />
+                            <span>{tp.photoUrl ? 'Change Photo' : 'Upload Photo'}</span>
                           </button>
-                        )}
+                          {tp.photoUrl && (
+                            <button
+                              type="button"
+                              onClick={() => updatePerformer(tp.id, { photoUrl: '' })}
+                              className="text-[11px] text-red-600 dark:text-red-400 hover:underline text-left cursor-pointer"
+                            >
+                              Remove photo
+                            </button>
+                          )}
+                        </div>
                       </div>
+
+                      <DefaultAvatarPicker
+                        compact
+                        value={tp.defaultAvatar}
+                        namePreview={pickText(tp.name, 'en') || 'Student'}
+                        onChange={(choice) =>
+                          updatePerformer(tp.id, { defaultAvatar: choice })
+                        }
+                      />
                     </div>
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">

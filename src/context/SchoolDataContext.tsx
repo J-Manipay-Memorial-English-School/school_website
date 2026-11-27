@@ -38,7 +38,12 @@ import {
   ThemeMode,
   ToastItem,
 } from '../types/school';
-import { pickText, readAttachmentFile, readImageFileAsDataUrl } from '../utils/schoolHelpers';
+import {
+  pickText,
+  readAttachmentFile,
+  readAudioFile,
+  readImageFileAsDataUrl,
+} from '../utils/schoolHelpers';
 
 const LANG_KEY = 'jmmes_lang_v1';
 const THEME_KEY = 'jmmes_theme_v1';
@@ -86,6 +91,9 @@ interface SchoolDataContextValue {
   uploadAdminAttachment: (
     file: File
   ) => Promise<{ name: string; mimeType: string; dataUrl: string }>;
+  uploadAdminAudio: (
+    file: File
+  ) => Promise<{ name: string; mimeType: string; url: string }>;
   inquiries: InquiryMessage[];
   updateGeneralAndHero: (payload: {
     schoolName: BilingualText;
@@ -215,7 +223,7 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [themeMode]);
 
-  // Apply Language preference & sync document title
+  // Apply Language preference & sync document title & favicon
   useEffect(() => {
     document.documentElement.lang = language === 'ta' ? 'ta' : 'en';
     const resolvedName = pickText(data.schoolName, language);
@@ -228,6 +236,21 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // ignore
     }
   }, [language, data.schoolName]);
+
+  // Sync browser favicon / tab icon with the school crest logo
+  useEffect(() => {
+    const logoHref =
+      data.schoolLogoUrl?.trim() || DEFAULT_SCHOOL_DATA.schoolLogoUrl;
+    if (!logoHref) return;
+
+    let iconLink = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!iconLink) {
+      iconLink = document.createElement('link');
+      iconLink.rel = 'icon';
+      document.head.appendChild(iconLink);
+    }
+    iconLink.href = logoHref;
+  }, [data.schoolLogoUrl]);
 
   // Apply Live Brand Color Customizer CSS custom properties
   useEffect(() => {
@@ -312,6 +335,23 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           name: uploaded.name,
           mimeType: uploaded.mimeType,
           dataUrl: uploaded.url,
+        };
+      } catch (err) {
+        return handleProtectedApiError(err);
+      }
+    },
+    [adminPassword, handleProtectedApiError]
+  );
+
+  const uploadAdminAudio = useCallback(
+    async (file: File): Promise<{ name: string; mimeType: string; url: string }> => {
+      const audioPayload = await readAudioFile(file);
+      try {
+        const uploaded = await uploadMediaFile(audioPayload, adminPassword);
+        return {
+          name: uploaded.name,
+          mimeType: uploaded.mimeType,
+          url: uploaded.url,
         };
       } catch (err) {
         return handleProtectedApiError(err);
@@ -745,6 +785,7 @@ export const SchoolDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         logoutAdmin,
         uploadAdminImage,
         uploadAdminAttachment,
+        uploadAdminAudio,
         inquiries,
         updateGeneralAndHero,
         resetSchoolLogo,

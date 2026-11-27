@@ -201,3 +201,59 @@ export function readAttachmentFile(
     reader.readAsDataURL(file);
   });
 }
+
+const AUDIO_EXTENSIONS = ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.webm'];
+
+/**
+ * Reads an audio recording file (MP3, WAV, M4A, OGG, AAC, WebM) into a data URL for upload.
+ */
+export function readAudioFile(
+  file: File,
+  maxBytes = 10 * 1024 * 1024
+): Promise<{ name: string; mimeType: string; dataUrl: string }> {
+  return new Promise((resolve, reject) => {
+    const lowerName = file.name.toLowerCase();
+    const isAudioMime = file.type.startsWith('audio/');
+    const hasAudioExt = AUDIO_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
+
+    if (!isAudioMime && !hasAudioExt) {
+      reject(new Error('Please select a valid audio file (MP3, WAV, M4A, OGG, or AAC).'));
+      return;
+    }
+
+    if (file.size > maxBytes) {
+      reject(new Error('Audio recording file size must be under 10 MB.'));
+      return;
+    }
+
+    const inferredMime =
+      file.type ||
+      (lowerName.endsWith('.wav')
+        ? 'audio/wav'
+        : lowerName.endsWith('.ogg')
+        ? 'audio/ogg'
+        : lowerName.endsWith('.m4a')
+        ? 'audio/mp4'
+        : lowerName.endsWith('.aac')
+        ? 'audio/aac'
+        : lowerName.endsWith('.webm')
+        ? 'audio/webm'
+        : 'audio/mpeg');
+
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read audio recording file.'));
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') {
+        reject(new Error('Unexpected file read result.'));
+        return;
+      }
+      resolve({
+        name: file.name,
+        mimeType: inferredMime,
+        dataUrl: reader.result,
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+

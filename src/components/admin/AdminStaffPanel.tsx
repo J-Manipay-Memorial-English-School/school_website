@@ -3,19 +3,10 @@ import { ArrowDown, ArrowUp, Edit2, Trash2, Upload, UserPlus, X } from 'lucide-r
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { StaffMember, StaffSectionCategory } from '../../types/school';
 import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
-import { SafeImage } from '../SafeImage';
+import { ProfileAvatar } from '../ProfileAvatar';
+import { DefaultAvatarPicker } from './DefaultAvatarPicker';
 
 const SECTION_OPTIONS: StaffSectionCategory[] = ['Primary', 'Secondary', 'GCE A/L'];
-
-function getInitials(name: string): string {
-  const cleaned = name
-    .replace(/^(Mr\.|Mrs\.|Ms\.|Dr\.|Rev\.|திருமதி|திரு\.|செல்வி)\s*/i, '')
-    .trim();
-  const parts = cleaned.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return 'T';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-}
 
 export const AdminStaffPanel: React.FC = () => {
   const {
@@ -40,6 +31,7 @@ export const AdminStaffPanel: React.FC = () => {
       qualifications: { en: '', ta: '' },
       category: 'Secondary',
       photoUrl: '',
+      defaultAvatar: 'initials',
     });
   };
 
@@ -133,26 +125,18 @@ export const AdminStaffPanel: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            {/* Live Square Thumbnail / Initials Preview + File Uploader */}
-            <div className="lg:col-span-3 space-y-2.5">
+            {/* Live Square Thumbnail / Avatar Preview + File Uploader */}
+            <div className="lg:col-span-3 space-y-3">
               <span className="block text-xs font-semibold text-stone-600 dark:text-stone-300">
                 Portrait (Optional)
               </span>
-              <div className="w-32 h-32 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
-                {editingMember.photoUrl.trim() ? (
-                  <SafeImage
-                    src={editingMember.photoUrl.trim()}
-                    alt={pickText(editingMember.name, 'en') || 'Teacher preview'}
-                    className="w-full h-full object-cover object-top"
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center text-white font-display font-semibold text-2xl"
-                    style={{ backgroundColor: 'var(--brand-primary)' }}
-                  >
-                    {getInitials(pickText(editingMember.name, 'en') || 'Teacher')}
-                  </div>
-                )}
+              <div className="w-28 h-28 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-2xl">
+                <ProfileAvatar
+                  photoUrl={editingMember.photoUrl}
+                  defaultAvatar={editingMember.defaultAvatar || 'initials'}
+                  name={pickText(editingMember.name, 'en') || 'Teacher'}
+                  iconSizeClass="w-12 h-12"
+                />
               </div>
 
               <input
@@ -169,7 +153,7 @@ export const AdminStaffPanel: React.FC = () => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Upload Image</span>
+                  <span>{editingMember.photoUrl ? 'Change Photo' : 'Upload Image'}</span>
                 </button>
                 {editingMember.photoUrl && (
                   <button
@@ -181,9 +165,15 @@ export const AdminStaffPanel: React.FC = () => {
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400">
-                If no photo is uploaded, an automatic initials badge is displayed.
-              </p>
+
+              <DefaultAvatarPicker
+                compact
+                value={editingMember.defaultAvatar || 'initials'}
+                namePreview={pickText(editingMember.name, 'en') || 'Teacher'}
+                onChange={(choice) =>
+                  setEditingMember({ ...editingMember, defaultAvatar: choice })
+                }
+              />
             </div>
 
             <div className="lg:col-span-9 space-y-3.5">
@@ -369,21 +359,13 @@ export const AdminStaffPanel: React.FC = () => {
                   <span className="font-mono-num text-xs font-semibold text-stone-400 w-6 shrink-0 text-center">
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 shrink-0 flex items-center justify-center">
-                    {member.photoUrl ? (
-                      <SafeImage
-                        src={member.photoUrl}
-                        alt={displayName}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex items-center justify-center text-white font-display font-semibold text-sm"
-                        style={{ backgroundColor: 'var(--brand-primary)' }}
-                      >
-                        {getInitials(displayName)}
-                      </div>
-                    )}
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 shrink-0 flex items-center justify-center text-sm">
+                    <ProfileAvatar
+                      photoUrl={member.photoUrl}
+                      defaultAvatar={member.defaultAvatar || 'initials'}
+                      name={displayName}
+                      iconSizeClass="w-7 h-7"
+                    />
                   </div>
                   <div className="min-w-0">
                     <div className="text-xs font-semibold text-[var(--brand-primary)] dark:text-[var(--brand-accent)]">

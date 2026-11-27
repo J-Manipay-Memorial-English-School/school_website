@@ -155,6 +155,18 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
       ...defaults.hero,
       ...(parsed.hero || {}),
     },
+    principal: {
+      ...defaults.principal,
+      ...(parsed.principal || {}),
+    },
+    heritage: {
+      ...defaults.heritage,
+      ...(parsed.heritage || {}),
+      anthemAudioUrl: {
+        ...(defaults.heritage.anthemAudioUrl || {}),
+        ...(parsed.heritage?.anthemAudioUrl || {}),
+      },
+    },
     stats: resolvedStats,
     studentStrength: resolvedStrength,
     academicsConfig: resolvedAcademicsConfig,

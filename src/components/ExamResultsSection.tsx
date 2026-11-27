@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Award, Camera, ChevronLeft, ChevronRight, Sparkles, UserRound, X } from 'lucide-react';
+import { Award, Camera, ChevronLeft, ChevronRight, Sparkles, X } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { ExamCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
 import { FormattedText } from './FormattedText';
+import { ProfileAvatar } from './ProfileAvatar';
 import { SafeImage } from './SafeImage';
 
 type FilterCategory = 'All' | ExamCategory;
@@ -75,7 +76,7 @@ export const ExamResultsSection: React.FC = () => {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setFilter(cat.id)}
-                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 ${
                     active
                       ? 'bg-white dark:bg-stone-800 text-stone-950 dark:text-white shadow-sm'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
@@ -103,10 +104,10 @@ export const ExamResultsSection: React.FC = () => {
               return (
                 <motion.article
                   key={result.id}
-                  initial={{ opacity: 0, y: 14 }}
+                  initial={{ opacity: 0, y: 8 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.3, delay: idx * 0.04 }}
+                  viewport={{ once: true, margin: '-30px' }}
+                  transition={{ duration: 0.22, delay: Math.min(idx * 0.025, 0.14) }}
                   className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden shadow-sm"
                 >
                   {/* Card Header: Category + Year + Pass Percentage */}
@@ -161,7 +162,7 @@ export const ExamResultsSection: React.FC = () => {
                           <span>{strings.examResults.topPerformersHeading}</span>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
                           {result.topPerformers.map((performer) => {
                             const performerName = pickText(performer.name, language);
                             const performerAchievement = pickText(performer.achievement, language);
@@ -170,19 +171,13 @@ export const ExamResultsSection: React.FC = () => {
                                 key={performer.id}
                                 className="flex items-center gap-3.5 p-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#FBF9F5] dark:bg-stone-950"
                               >
-                                <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0 flex items-center justify-center">
-                                  {performer.photoUrl ? (
-                                    <SafeImage
-                                      src={performer.photoUrl}
-                                      alt={performerName}
-                                      className="w-full h-full object-cover object-top"
-                                    />
-                                  ) : (
-                                    <UserRound
-                                      className="w-6 h-6 text-stone-400 dark:text-stone-500 stroke-[1.6]"
-                                      aria-hidden="true"
-                                    />
-                                  )}
+                                <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0">
+                                  <ProfileAvatar
+                                    photoUrl={performer.photoUrl}
+                                    defaultAvatar={performer.defaultAvatar}
+                                    name={performerName}
+                                    iconSizeClass="w-6 h-6"
+                                  />
                                 </div>
 
                                 <div className="min-w-0">

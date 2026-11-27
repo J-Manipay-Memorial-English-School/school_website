@@ -60,11 +60,11 @@ export const SmartSystemsSection: React.FC = () => {
             return (
               <motion.article
                 key={sys.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.28, delay: idx * 0.04 }}
-                className="flex flex-col justify-between rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{ duration: 0.22, delay: Math.min(idx * 0.025, 0.14) }}
+                className="flex flex-col justify-between rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 hover:-translate-y-0.5 hover:shadow-md transition-all duration-150"
               >
                 <div>
                   <div

@@ -77,9 +77,9 @@ export const Header: React.FC<HeaderProps> = ({
             type="button"
             onClick={() => handleNavClick('home')}
             title={pickText(data.schoolName, language)}
-            className="flex items-center gap-2 min-w-0 shrink-0 text-left group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] rounded-lg"
+            className="flex items-center gap-2 min-w-0 shrink-0 text-left group cursor-pointer px-1.5 py-1 -ml-1.5 rounded-xl hover:bg-stone-100/80 dark:hover:bg-stone-900/70 transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
           >
-            <SchoolCrest className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 transition-transform duration-200 group-hover:scale-105" />
+            <SchoolCrest className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 transition-transform duration-150 group-hover:scale-105" />
             <span
               className={`font-display font-semibold tracking-tight text-stone-900 dark:text-stone-50 whitespace-nowrap truncate ${
                 language === 'ta'

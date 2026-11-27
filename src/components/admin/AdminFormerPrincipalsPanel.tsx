@@ -6,13 +6,13 @@ import {
   Plus,
   Trash2,
   Upload,
-  UserRound,
   X,
 } from 'lucide-react';
 import { useSchoolData } from '../../context/SchoolDataContext';
 import { FormerPrincipal } from '../../types/school';
 import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers';
-import { SafeImage } from '../SafeImage';
+import { ProfileAvatar } from '../ProfileAvatar';
+import { DefaultAvatarPicker } from './DefaultAvatarPicker';
 
 export const AdminFormerPrincipalsPanel: React.FC = () => {
   const {
@@ -36,6 +36,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
       tenure: { en: '', ta: '' },
       note: { en: '', ta: '' },
       photoUrl: '',
+      defaultAvatar: 'silhouette',
     });
   };
 
@@ -130,24 +131,18 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            {/* Optional Portrait File Uploader */}
-            <div className="lg:col-span-3 space-y-2.5">
+            {/* Optional Portrait File Uploader + Default Icon Picker */}
+            <div className="lg:col-span-3 space-y-3">
               <span className="block text-xs font-semibold text-stone-600 dark:text-stone-300">
                 Portrait Photo (Optional)
               </span>
-              <div className="w-28 h-32 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
-                {editingItem.photoUrl ? (
-                  <SafeImage
-                    src={editingItem.photoUrl}
-                    alt="Former principal preview"
-                    className="w-full h-full object-cover object-top"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 px-2 text-center">
-                    <UserRound className="w-9 h-9 stroke-[1.5]" aria-hidden="true" />
-                    <span className="text-[10px] mt-1">Default Silhouette</span>
-                  </div>
-                )}
+              <div className="w-28 h-28 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-2xl">
+                <ProfileAvatar
+                  photoUrl={editingItem.photoUrl}
+                  defaultAvatar={editingItem.defaultAvatar}
+                  name={pickText(editingItem.name, 'en') || 'Former Principal'}
+                  iconSizeClass="w-12 h-12"
+                />
               </div>
 
               <input
@@ -164,7 +159,7 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Upload Image / Choose File</span>
+                  <span>{editingItem.photoUrl ? 'Change Photo' : 'Upload Photo'}</span>
                 </button>
                 {editingItem.photoUrl && (
                   <button
@@ -177,6 +172,15 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                   </button>
                 )}
               </div>
+
+              <DefaultAvatarPicker
+                compact
+                value={editingItem.defaultAvatar}
+                namePreview={pickText(editingItem.name, 'en') || 'Principal'}
+                onChange={(choice) =>
+                  setEditingItem({ ...editingItem, defaultAvatar: choice })
+                }
+              />
             </div>
 
             <div className="lg:col-span-9 space-y-4">
@@ -335,19 +339,13 @@ export const AdminFormerPrincipalsPanel: React.FC = () => {
                     {String(index + 1).padStart(2, '0')}
                   </span>
 
-                  <div className="w-12 h-14 rounded-lg overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0 flex items-center justify-center">
-                    {principal.photoUrl ? (
-                      <SafeImage
-                        src={principal.photoUrl}
-                        alt={displayName}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    ) : (
-                      <UserRound
-                        className="w-6 h-6 text-stone-400 dark:text-stone-500 stroke-[1.5]"
-                        aria-hidden="true"
-                      />
-                    )}
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0 flex items-center justify-center text-xs">
+                    <ProfileAvatar
+                      photoUrl={principal.photoUrl}
+                      defaultAvatar={principal.defaultAvatar}
+                      name={displayName}
+                      iconSizeClass="w-6 h-6"
+                    />
                   </div>
 
                   <div className="min-w-0">

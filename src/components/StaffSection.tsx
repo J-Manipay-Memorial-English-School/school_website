@@ -4,19 +4,9 @@ import { Award, User } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { StaffSectionCategory } from '../types/school';
 import { pickText } from '../utils/schoolHelpers';
-import { SafeImage } from './SafeImage';
+import { ProfileAvatar } from './ProfileAvatar';
 
 type StaffFilter = 'All' | StaffSectionCategory;
-
-function getInitials(name: string): string {
-  const cleaned = name
-    .replace(/^(Mr\.|Mrs\.|Ms\.|Dr\.|Rev\.|திருமதி|திரு\.|செல்வி)\s*/i, '')
-    .trim();
-  const parts = cleaned.split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return 'T';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-}
 
 export const StaffSection: React.FC = () => {
   const { data, language, strings } = useSchoolData();
@@ -28,6 +18,7 @@ export const StaffSection: React.FC = () => {
   }, [data.staffMembers, filter]);
 
   const filterOptions: StaffFilter[] = ['All', 'Primary', 'Secondary', 'GCE A/L'];
+  const principalName = pickText(data.principal.name, language);
 
   return (
     <section
@@ -48,29 +39,30 @@ export const StaffSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Top Spotlight — The Principal (Auto-synced with SchoolDataContext principal) */}
+        {/* Top Spotlight — The Principal (Dynamic height hugging content, avatar fallback ready) */}
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-3xl mx-auto mb-14 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden shadow-sm"
+          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-3xl mx-auto mb-14 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-5 sm:p-6 shadow-sm"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-12 items-center">
-            <div className="sm:col-span-5 aspect-[4/4] sm:aspect-[3/4] h-full bg-stone-100 dark:bg-stone-800">
-              <SafeImage
-                src={data.principal.photoUrl}
-                alt={pickText(data.principal.name, language)}
-                className="w-full h-full object-cover object-top"
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className="w-36 h-40 sm:w-44 sm:h-48 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0">
+              <ProfileAvatar
+                photoUrl={data.principal.photoUrl}
+                defaultAvatar={data.principal.defaultAvatar}
+                name={principalName}
+                iconSizeClass="w-16 h-16"
               />
             </div>
 
-            <div className="sm:col-span-7 p-6 sm:p-8 text-center sm:text-left">
+            <div className="min-w-0 flex-1 text-center sm:text-left sm:py-1">
               <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest font-semibold text-[var(--brand-primary)] dark:text-[var(--brand-accent)] mb-2">
                 <Award className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{strings.staff.principalRoleLabel}</span>
               </div>
               <h3 className="font-display text-2xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-50 mb-2">
-                {pickText(data.principal.name, language)}
+                {principalName}
               </h3>
               <p className="text-sm font-medium text-stone-700 dark:text-stone-200 mb-2">
                 {pickText(data.principal.credentials, language)}
@@ -104,7 +96,7 @@ export const StaffSection: React.FC = () => {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setFilter(opt)}
-                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 ${
                     active
                       ? 'bg-white dark:bg-stone-800 text-stone-950 dark:text-white shadow-sm'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
@@ -117,13 +109,13 @@ export const StaffSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Teachers Grid */}
+        {/* Teachers Grid — items-start guarantees every box height cleanly fits its own content */}
         {filteredTeachers.length === 0 ? (
           <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-12 text-center text-sm text-stone-500 dark:text-stone-400">
             {strings.staff.emptyState}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
             {filteredTeachers.map((teacher, idx) => {
               const teacherName = pickText(teacher.name, language);
               const teacherRole = pickText(teacher.role, language);
@@ -131,30 +123,19 @@ export const StaffSection: React.FC = () => {
               return (
                 <motion.article
                   key={teacher.id}
-                  layout
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={{ opacity: 0, y: 8 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.32, delay: idx * 0.04 }}
-                  className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 flex items-start gap-4 hover:-translate-y-0.5 transition-transform duration-200"
+                  viewport={{ once: true, margin: '-30px' }}
+                  transition={{ duration: 0.22, delay: Math.min(idx * 0.025, 0.15) }}
+                  className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-sm transition-all duration-150"
                 >
-                  {/* Portrait or Clean Avatar Fallback */}
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0 flex items-center justify-center">
-                    {teacher.photoUrl ? (
-                      <SafeImage
-                        src={teacher.photoUrl}
-                        alt={teacherName}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    ) : (
-                      <div
-                        className="w-full h-full flex flex-col items-center justify-center text-white font-display font-semibold text-lg"
-                        style={{ backgroundColor: 'var(--brand-primary)' }}
-                        aria-label={teacherName}
-                      >
-                        <span>{getInitials(teacher.name.en || teacher.name.ta)}</span>
-                      </div>
-                    )}
+                  <div className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 shrink-0">
+                    <ProfileAvatar
+                      photoUrl={teacher.photoUrl}
+                      defaultAvatar={teacher.defaultAvatar}
+                      name={teacherName}
+                      iconSizeClass="w-8 h-8"
+                    />
                   </div>
 
                   <div className="min-w-0 flex-1">
@@ -167,12 +148,12 @@ export const StaffSection: React.FC = () => {
                       {teacherName}
                     </h4>
 
-                    <p className="text-sm text-stone-700 dark:text-stone-200 leading-snug mb-1.5">
+                    <p className="text-sm text-stone-700 dark:text-stone-200 leading-snug">
                       {teacherRole}
                     </p>
 
                     {teacherQuals && (
-                      <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">
+                      <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1.5">
                         {teacherQuals}
                       </p>
                     )}

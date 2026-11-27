@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { AcademicsSection } from './components/AcademicsSection';
 import { AchievementsSection } from './components/AchievementsSection';
 import { AdminPortal } from './components/admin/AdminPortal';
@@ -90,10 +90,10 @@ function AppShell() {
               {activeTab === 'home' && (
                 <motion.div
                   key="tab-home"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <HeroSection onSelectTab={handleSelectTab} />
                   <StatsBar />
@@ -107,10 +107,10 @@ function AppShell() {
               {activeTab === 'heritage' && (
                 <motion.div
                   key="tab-heritage"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <HeritageSection />
                 </motion.div>
@@ -119,10 +119,10 @@ function AppShell() {
               {activeTab === 'academics' && (
                 <motion.div
                   key="tab-academics"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <AcademicsSection />
                 </motion.div>
@@ -131,10 +131,10 @@ function AppShell() {
               {activeTab === 'staff' && (
                 <motion.div
                   key="tab-staff"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <StaffSection />
                 </motion.div>
@@ -143,10 +143,10 @@ function AppShell() {
               {activeTab === 'formerPrincipals' && (
                 <motion.div
                   key="tab-former-principals"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <FormerPrincipalsSection />
                 </motion.div>
@@ -155,10 +155,10 @@ function AppShell() {
               {activeTab === 'examResults' && (
                 <motion.div
                   key="tab-exam-results"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <ExamResultsSection />
                 </motion.div>
@@ -167,10 +167,10 @@ function AppShell() {
               {activeTab === 'notices' && (
                 <motion.div
                   key="tab-notices"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <NoticesSection
                     selectedNotice={selectedNotice}
@@ -182,10 +182,10 @@ function AppShell() {
               {activeTab === 'achievements' && (
                 <motion.div
                   key="tab-achievements"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <AchievementsSection />
                 </motion.div>
@@ -194,10 +194,10 @@ function AppShell() {
               {activeTab === 'gallery' && (
                 <motion.div
                   key="tab-gallery"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <GallerySection />
                 </motion.div>
@@ -206,10 +206,10 @@ function AppShell() {
               {activeTab === 'contact' && (
                 <motion.div
                   key="tab-contact"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16 }}
                 >
                   <ContactSection />
                 </motion.div>
@@ -236,8 +236,10 @@ function AppShell() {
 
 export default function App() {
   return (
-    <SchoolDataProvider>
-      <AppShell />
-    </SchoolDataProvider>
+    <MotionConfig reducedMotion="user">
+      <SchoolDataProvider>
+        <AppShell />
+      </SchoolDataProvider>
+    </MotionConfig>
   );
 }

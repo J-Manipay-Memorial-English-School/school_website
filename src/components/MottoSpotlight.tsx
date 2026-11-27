@@ -14,10 +14,10 @@ export const MottoSpotlight: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.45 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.26 }}
           className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-8 sm:p-12 text-center shadow-sm"
         >
           <div className="max-w-2xl mx-auto">

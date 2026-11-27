@@ -1,76 +1,71 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { BookOpen, Compass, Pause, Play, RotateCcw, Shield, Sparkles } from 'lucide-react';
+import { BookOpen, Compass, Pause, Play, RotateCcw, Shield, Sparkles, Volume2 } from 'lucide-react';
 import { useSchoolData } from '../context/SchoolDataContext';
 import { pickList, pickText } from '../utils/schoolHelpers';
 import { FormattedText } from './FormattedText';
 
 type HeritageTab = 'history' | 'visionMission' | 'motto' | 'anthem';
 
+function formatAudioClock(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${String(secs).padStart(2, '0')}`;
+}
+
 export const HeritageSection: React.FC = () => {
   const { data, language, strings } = useSchoolData();
   const [activeTab, setActiveTab] = useState<HeritageTab>('history');
   const [isPlayingAnthem, setIsPlayingAnthem] = useState(false);
   const [activeStanza, setActiveStanza] = useState<number>(0);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const timerRef = useRef<number | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const verses = pickList(data.heritage.anthemVerses, language);
+  const activeAnthemAudioUrl = data.heritage.anthemAudioUrl?.[language]?.trim() || '';
+  const hasAudioRecording = Boolean(activeAnthemAudioUrl);
 
-  const playSoftChime = (step: number) => {
-    try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!AudioCtx) return;
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioCtx();
+  // Cleanly stop/reset audio playback when switching language, switching tabs, or updating URL
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setIsPlayingAnthem(false);
+    setCurrentTime(0);
+    setDuration(0);
+  }, [language, activeAnthemAudioUrl, activeTab]);
+
+  const handleTogglePlay = async () => {
+    const audio = audioRef.current;
+    if (!audio || !hasAudioRecording) return;
+
+    if (isPlayingAnthem) {
+      audio.pause();
+      setIsPlayingAnthem(false);
+    } else {
+      try {
+        await audio.play();
+        setIsPlayingAnthem(true);
+      } catch {
+        setIsPlayingAnthem(false);
       }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') {
-        void ctx.resume();
-      }
-      const notes = [261.63, 293.66, 329.63, 392.0];
-      const freq = notes[step % notes.length];
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.06, ctx.currentTime + 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.1);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 1.15);
-    } catch {
-      // Audio playback gracefully skipped if unavailable
     }
   };
 
-  useEffect(() => {
-    if (!isPlayingAnthem) {
-      if (timerRef.current) {
-        window.clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      return;
+  const handleRestartAudio = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
     }
-
-    playSoftChime(activeStanza);
-    timerRef.current = window.setInterval(() => {
-      setActiveStanza((prev) => {
-        const next = (prev + 1) % Math.max(1, verses.length);
-        playSoftChime(next);
-        return next;
-      });
-    }, 4500);
-
-    return () => {
-      if (timerRef.current) {
-        window.clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [isPlayingAnthem, verses.length]);
+    setIsPlayingAnthem(false);
+    setCurrentTime(0);
+    setActiveStanza(0);
+  };
 
   const tabs: { id: HeritageTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'history', label: strings.heritage.tabs.history, icon: BookOpen },
@@ -78,6 +73,8 @@ export const HeritageSection: React.FC = () => {
     { id: 'motto', label: strings.heritage.tabs.motto, icon: Shield },
     { id: 'anthem', label: strings.heritage.tabs.anthem, icon: Sparkles },
   ];
+
+  const progressPercent = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
 
   return (
     <section
@@ -114,7 +111,7 @@ export const HeritageSection: React.FC = () => {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 ${
                     active
                       ? 'bg-white dark:bg-stone-800 text-stone-950 dark:text-white shadow-sm'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
@@ -133,10 +130,10 @@ export const HeritageSection: React.FC = () => {
           {activeTab === 'history' && (
             <motion.div
               key="history"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16 }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
             >
               <div className="lg:col-span-4 rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 sm:p-8 space-y-6">
@@ -176,11 +173,11 @@ export const HeritageSection: React.FC = () => {
           {activeTab === 'visionMission' && (
             <motion.div
               key="visionMission"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start"
             >
               <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-7 sm:p-9">
                 <span className="text-xs uppercase tracking-widest font-semibold text-stone-500 dark:text-stone-400 block mb-3">
@@ -207,10 +204,10 @@ export const HeritageSection: React.FC = () => {
           {activeTab === 'motto' && (
             <motion.div
               key="motto"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16 }}
               className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-8 sm:p-12 text-center"
             >
               <div className="max-w-2xl mx-auto">
@@ -236,12 +233,43 @@ export const HeritageSection: React.FC = () => {
           {activeTab === 'anthem' && (
             <motion.div
               key="anthem"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.16 }}
               className="rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 sm:p-10"
             >
+              {hasAudioRecording && (
+                <audio
+                  ref={audioRef}
+                  src={activeAnthemAudioUrl}
+                  preload="metadata"
+                  onLoadedMetadata={(e) => {
+                    const dur = e.currentTarget.duration;
+                    if (Number.isFinite(dur)) setDuration(dur);
+                  }}
+                  onTimeUpdate={(e) => {
+                    const time = e.currentTarget.currentTime;
+                    const dur = e.currentTarget.duration;
+                    setCurrentTime(time);
+                    if (Number.isFinite(dur) && dur > 0 && verses.length > 0) {
+                      const nextIdx = Math.min(
+                        verses.length - 1,
+                        Math.floor((time / dur) * verses.length)
+                      );
+                      setActiveStanza(nextIdx);
+                    }
+                  }}
+                  onEnded={() => {
+                    setIsPlayingAnthem(false);
+                    setCurrentTime(0);
+                    setActiveStanza(0);
+                  }}
+                  onPause={() => setIsPlayingAnthem(false)}
+                  onPlay={() => setIsPlayingAnthem(true)}
+                />
+              )}
+
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-stone-200 dark:border-stone-800">
                 <div>
                   <span className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 block mb-1">
@@ -252,55 +280,75 @@ export const HeritageSection: React.FC = () => {
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setIsPlayingAnthem((prev) => !prev)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white transition-opacity hover:opacity-90 cursor-pointer whitespace-nowrap"
-                    style={{ backgroundColor: 'var(--brand-primary)' }}
-                  >
-                    {isPlayingAnthem ? (
-                      <>
-                        <Pause className="w-4 h-4" aria-hidden="true" />
-                        <span>{strings.heritage.pauseAnthem}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play className="w-4 h-4" aria-hidden="true" />
-                        <span>{strings.heritage.playAnthem}</span>
-                      </>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsPlayingAnthem(false);
-                      setActiveStanza(0);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
-                    aria-label={strings.heritage.resetAnthem}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
-                    <span>{strings.heritage.resetAnthem}</span>
-                  </button>
-                </div>
+                {/* Strict Per-Language Rule: Play button renders ONLY when active language has an audio recording */}
+                {hasAudioRecording && (
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleTogglePlay}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] cursor-pointer whitespace-nowrap"
+                      style={{ backgroundColor: 'var(--brand-primary)' }}
+                    >
+                      {isPlayingAnthem ? (
+                        <>
+                          <Pause className="w-4 h-4" aria-hidden="true" />
+                          <span>{strings.heritage.pauseAnthem}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4" aria-hidden="true" />
+                          <span>{strings.heritage.playAnthem}</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRestartAudio}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium border border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all duration-150 active:scale-[0.98] cursor-pointer"
+                      aria-label={strings.heritage.resetAnthem}
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span>{strings.heritage.resetAnthem}</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Compact progress bar shown only when active language has audio */}
+              {hasAudioRecording && (isPlayingAnthem || currentTime > 0 || duration > 0) && (
+                <div className="mb-6 flex items-center gap-3 px-4 py-2.5 rounded-lg bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800">
+                  <Volume2
+                    className="w-4 h-4 text-[var(--brand-primary)] dark:text-[var(--brand-accent)] shrink-0"
+                    aria-hidden="true"
+                  />
+                  <div className="flex-1 h-1.5 rounded-full bg-stone-200 dark:bg-stone-800 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-150"
+                      style={{
+                        width: `${progressPercent}%`,
+                        backgroundColor: 'var(--brand-primary)',
+                      }}
+                    />
+                  </div>
+                  <span className="font-mono-num text-[11px] text-stone-500 dark:text-stone-400 shrink-0">
+                    {formatAudioClock(currentTime)}
+                    {duration > 0 ? ` / ${formatAudioClock(duration)}` : ''}
+                  </span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                 {verses.map((verse, idx) => {
                   const isHighlighted = activeStanza === idx;
                   return (
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => {
-                        setActiveStanza(idx);
-                        playSoftChime(idx);
-                      }}
-                      className={`text-left rounded-xl p-6 border transition-all cursor-pointer ${
+                      onClick={() => setActiveStanza(idx)}
+                      className={`text-left rounded-xl p-6 border transition-all duration-150 cursor-pointer ${
                         isHighlighted
                           ? 'bg-white dark:bg-stone-900 border-[var(--brand-primary)] dark:border-[var(--brand-accent)] shadow-sm'
-                          : 'bg-transparent border-stone-200 dark:border-stone-800 opacity-75 hover:opacity-100'
+                          : 'bg-transparent border-stone-200 dark:border-stone-800 opacity-80 hover:opacity-100'
                       }`}
                     >
                       <div className="text-xs font-mono-num uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-3">

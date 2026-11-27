@@ -3,6 +3,7 @@ import {
   ArrowDown,
   ArrowUp,
   Loader2,
+  Music,
   Plus,
   RotateCcw,
   Save,
@@ -40,6 +41,7 @@ export const AdminGeneralPanel: React.FC = () => {
     updateGeneralAndHero,
     resetSchoolLogo,
     uploadAdminImage,
+    uploadAdminAudio,
     showToast,
   } = useSchoolData();
 
@@ -66,8 +68,12 @@ export const AdminGeneralPanel: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  const [uploadingAnthemEn, setUploadingAnthemEn] = useState(false);
+  const [uploadingAnthemTa, setUploadingAnthemTa] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const anthemAudioEnRef = useRef<HTMLInputElement>(null);
+  const anthemAudioTaRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setSchoolName(data.schoolName);
@@ -168,6 +174,10 @@ export const AdminGeneralPanel: React.FC = () => {
             en: splitParagraphs(normalizeLineBreaks(anthemTextEn)),
             ta: splitParagraphs(normalizeLineBreaks(anthemTextTa)),
           },
+          anthemAudioUrl: {
+            en: heritage.anthemAudioUrl?.en?.trim() || '',
+            ta: heritage.anthemAudioUrl?.ta?.trim() || '',
+          },
         },
       });
     } catch {
@@ -220,6 +230,47 @@ export const AdminGeneralPanel: React.FC = () => {
     } catch {
       // Toast error handled in SchoolDataContext
     }
+  };
+
+  const handleAnthemAudioUpload = async (
+    lang: 'en' | 'ta',
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    if (lang === 'en') setUploadingAnthemEn(true);
+    else setUploadingAnthemTa(true);
+    try {
+      const uploaded = await uploadAdminAudio(file);
+      setHeritage((prev) => ({
+        ...prev,
+        anthemAudioUrl: {
+          ...(prev.anthemAudioUrl || {}),
+          [lang]: uploaded.url,
+        },
+      }));
+      showToast(
+        `${lang === 'en' ? 'English' : 'Tamil'} school anthem audio uploaded. Click Save Changes to publish.`
+      );
+    } catch (err) {
+      if (err instanceof Error && err.name !== 'UnauthorizedError') {
+        showToast(err.message || 'Unable to upload anthem audio file.', 'error');
+      }
+    } finally {
+      if (lang === 'en') setUploadingAnthemEn(false);
+      else setUploadingAnthemTa(false);
+    }
+  };
+
+  const removeAnthemAudio = (lang: 'en' | 'ta') => {
+    setHeritage((prev) => ({
+      ...prev,
+      anthemAudioUrl: {
+        ...(prev.anthemAudioUrl || {}),
+        [lang]: '',
+      },
+    }));
   };
 
   return (
@@ -1030,6 +1081,156 @@ export const AdminGeneralPanel: React.FC = () => {
               onChange={(e) => setAnthemTextTa(e.target.value)}
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
+          </div>
+        </div>
+
+        {/* School Anthem Audio Recordings (Optional per language) */}
+        <div className="pt-4 border-t border-stone-200 dark:border-stone-800 space-y-3">
+          <div>
+            <h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <Music
+                className="w-4 h-4 text-[var(--brand-primary)] dark:text-[var(--brand-accent)]"
+                aria-hidden="true"
+              />
+              <span>School Anthem Audio Recordings (Optional — Per Language)</span>
+            </h4>
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+              Upload an audio recording (MP3, WAV, M4A, OGG) for English, Tamil, or both. On the public portal, the Play button appears only for a language that has an audio recording uploaded.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* English Anthem Audio */}
+            <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-[#FBF9F5] dark:bg-stone-950/60 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-stone-700 dark:text-stone-200">
+                  English Anthem Recording
+                </span>
+                {heritage.anthemAudioUrl?.en?.trim() ? (
+                  <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                    Audio Ready
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-stone-400">No audio uploaded</span>
+                )}
+              </div>
+
+              {heritage.anthemAudioUrl?.en?.trim() && (
+                <audio
+                  controls
+                  preload="metadata"
+                  src={heritage.anthemAudioUrl.en}
+                  className="w-full h-9"
+                />
+              )}
+
+              <input
+                ref={anthemAudioEnRef}
+                type="file"
+                accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac"
+                onChange={(e) => void handleAnthemAudioUpload('en', e)}
+                className="hidden"
+              />
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled={uploadingAnthemEn}
+                  onClick={() => anthemAudioEnRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {uploadingAnthemEn ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                  )}
+                  <span>
+                    {uploadingAnthemEn
+                      ? 'Uploading...'
+                      : heritage.anthemAudioUrl?.en?.trim()
+                      ? 'Replace English Audio'
+                      : 'Upload English Audio'}
+                  </span>
+                </button>
+
+                {heritage.anthemAudioUrl?.en?.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => removeAnthemAudio('en')}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Remove</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Tamil Anthem Audio */}
+            <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-[#FBF9F5] dark:bg-stone-950/60 p-4 space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-stone-700 dark:text-stone-200">
+                  Tamil Anthem Recording (தமிழ் பண்)
+                </span>
+                {heritage.anthemAudioUrl?.ta?.trim() ? (
+                  <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                    Audio Ready
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-stone-400">No audio uploaded</span>
+                )}
+              </div>
+
+              {heritage.anthemAudioUrl?.ta?.trim() && (
+                <audio
+                  controls
+                  preload="metadata"
+                  src={heritage.anthemAudioUrl.ta}
+                  className="w-full h-9"
+                />
+              )}
+
+              <input
+                ref={anthemAudioTaRef}
+                type="file"
+                accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac"
+                onChange={(e) => void handleAnthemAudioUpload('ta', e)}
+                className="hidden"
+              />
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled={uploadingAnthemTa}
+                  onClick={() => anthemAudioTaRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {uploadingAnthemTa ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                  )}
+                  <span>
+                    {uploadingAnthemTa
+                      ? 'Uploading...'
+                      : heritage.anthemAudioUrl?.ta?.trim()
+                      ? 'Replace Tamil Audio'
+                      : 'Upload Tamil Audio'}
+                  </span>
+                </button>
+
+                {heritage.anthemAudioUrl?.ta?.trim() && (
+                  <button
+                    type="button"
+                    onClick={() => removeAnthemAudio('ta')}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-stone-200 dark:border-stone-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Remove</span>
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ const CounterNumber: React.FC<CounterNumberProps> = ({ target, inView }) => {
 
   useEffect(() => {
     if (!inView) return;
-    const duration = 900;
+    const duration = 600;
     const startTime = performance.now();
     let frameId = 0;
 
@@ -89,10 +89,10 @@ export const StatsBar: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-stone-200 dark:divide-stone-800">
           {/* Interactive Active Students Card (with Boys/Girls totals & Breakdown Toggle) */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.4 }}
+            viewport={{ once: true, margin: '-30px' }}
+            transition={{ duration: 0.24 }}
             onClick={() => setBreakdownOpen((prev) => !prev)}
             role="button"
             tabIndex={0}
@@ -152,10 +152,10 @@ export const StatsBar: React.FC = () => {
           {secondaryItems.map((item, index) => (
             <motion.div
               key={item.key}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 8 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.4, delay: (index + 1) * 0.06 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 0.24, delay: (index + 1) * 0.03 }}
               className="py-7 sm:py-9 px-4 sm:px-8"
             >
               <div

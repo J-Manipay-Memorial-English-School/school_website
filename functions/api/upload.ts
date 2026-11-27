@@ -7,8 +7,8 @@ interface UploadRequestBody {
 }
 
 const ALLOWED_DATA_URL_PREFIX =
-  /^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml)|application\/pdf);base64,/i;
-const MAX_UPLOAD_DATA_URL_LENGTH = 8 * 1024 * 1024;
+  /^data:(image\/(png|jpeg|jpg|webp|gif|svg\+xml)|application\/pdf|audio\/(mpeg|mp3|wav|x-wav|wave|ogg|mp4|x-m4a|m4a|aac|webm));base64,/i;
+const MAX_UPLOAD_DATA_URL_LENGTH = 16 * 1024 * 1024;
 const CLOUDINARY_FOLDER = 'jmmes-portal';
 
 function sanitizePublicId(fileName: string): string {
@@ -72,7 +72,10 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
   const prefixMatch = ALLOWED_DATA_URL_PREFIX.exec(dataUrl);
   if (!dataUrl || !prefixMatch) {
     return jsonResponse(
-      { error: 'Invalid file format. Only image and PDF data uploads are permitted.' },
+      {
+        error:
+          'Invalid file format. Only image, PDF, and audio (MP3/WAV/M4A/OGG/AAC) uploads are permitted.',
+      },
       400
     );
   }
@@ -84,6 +87,7 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
   const detectedMimeType = prefixMatch[1].toLowerCase();
   const resolvedMimeType = rawMimeType || detectedMimeType;
   const isPdf = detectedMimeType === 'application/pdf';
+  const isAudio = detectedMimeType.startsWith('audio/');
   const isSvg = detectedMimeType === 'image/svg+xml';
 
   const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -103,7 +107,7 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
   formData.append('public_id', publicId);
   formData.append('signature', signature);
 
-  const resourceType = isPdf ? 'raw' : 'image';
+  const resourceType = isPdf ? 'raw' : isAudio ? 'video' : 'image';
   const uploadUrl = `https://api.cloudinary.com/v1_1/${encodeURIComponent(
     cloudName
   )}/${resourceType}/upload`;
@@ -140,9 +144,9 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
     return jsonResponse({ error: errMsg }, 502);
   }
 
-  // Inject f_auto,q_auto delivery optimization for raster images
+  // Inject f_auto,q_auto delivery optimization for raster images only
   const finalUrl =
-    !isPdf && !isSvg && secureUrl.includes('/image/upload/')
+    !isPdf && !isAudio && !isSvg && secureUrl.includes('/image/upload/')
       ? secureUrl.replace('/image/upload/', '/image/upload/f_auto,q_auto/')
       : secureUrl;
 
