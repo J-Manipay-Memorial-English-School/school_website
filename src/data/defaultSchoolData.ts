@@ -954,7 +954,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
     },
     subtitle: {
       en: 'Reach the school office at Memorial Lane, Manipay for admissions, alumni inquiries, and official correspondence.',
-      ta: 'மாணவர் அனுமதி, பழைய மாணவர் தொடர்புகள் மற்றும் அலுவலகத் தகவல்களுக்கு மானிப்பாய் மெமோரியல் லேன் பாடசாலையைத் தொடர்பு கொள்ளவும்.',
+      ta: 'மாணவர் அனுமதி, பழைய மாணவர் தொடர்புகள் மற்றும் அலுவலகத் தகவல்களுக்கு மானிப்பாய் மெமோறியல் லேன் பாடசாலையைத் தொடர்பு கொள்ளவும்.',
     },
     address: {
       en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
