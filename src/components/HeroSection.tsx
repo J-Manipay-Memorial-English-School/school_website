@@ -158,6 +158,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSelectTab }) => {
               >
                 {pickText(data.hero.eyebrow, language)}
               </p>
+              {(pickText(data.contact?.schoolType, language) || strings.hero.classification) && (
+                <p
+                  className="text-xs font-medium tracking-wide text-stone-200/90 mt-1"
+                  style={{ textShadow: '0 1px 6px rgba(0, 0, 0, 0.5)' }}
+                >
+                  {pickText(data.contact?.schoolType, language) || strings.hero.classification}
+                </p>
+              )}
             </div>
           </motion.div>
 

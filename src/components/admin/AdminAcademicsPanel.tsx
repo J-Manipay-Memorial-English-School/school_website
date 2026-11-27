@@ -387,7 +387,7 @@ export const AdminAcademicsPanel: React.FC = () => {
                   kicker: { ...headerForm.kicker, en: e.target.value },
                 })
               }
-              placeholder="e.g., 1AC Provincial Curriculum"
+              placeholder="e.g., 1C Provincial Curriculum · Medium of Instruction: Tamil"
               className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950"
             />
           </div>
@@ -404,7 +404,7 @@ export const AdminAcademicsPanel: React.FC = () => {
                   kicker: { ...headerForm.kicker, ta: e.target.value },
                 })
               }
-              placeholder="உ-ம்: 1AC மாகாணக் கலைத்திட்டம்"
+              placeholder="உ-ம்: 1C மாகாணக் கலைத்திட்டம் · மொழி மூலம்: தமிழ்"
               className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950"
             />
           </div>

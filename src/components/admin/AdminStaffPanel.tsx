@@ -6,7 +6,7 @@ import { cleanBilingual, hasAnyText, pickText } from '../../utils/schoolHelpers'
 import { ProfileAvatar } from '../ProfileAvatar';
 import { DefaultAvatarPicker } from './DefaultAvatarPicker';
 
-const SECTION_OPTIONS: StaffSectionCategory[] = ['Primary', 'Secondary', 'GCE A/L'];
+const SECTION_OPTIONS: StaffSectionCategory[] = ['Primary', 'Secondary'];
 
 export const AdminStaffPanel: React.FC = () => {
   const {
@@ -87,7 +87,7 @@ export const AdminStaffPanel: React.FC = () => {
             Teachers / Staff Directory
           </h2>
           <p className="text-sm text-stone-500 dark:text-stone-400">
-            Add, edit, reorder, or delete faculty profiles for Primary, Secondary, and GCE A/L sections. Enter English, Tamil, or both.
+            Add, edit, reorder, or delete faculty profiles for Primary and Secondary sections. Enter English, Tamil, or both.
           </p>
         </div>
 
@@ -408,6 +408,7 @@ export const AdminStaffPanel: React.FC = () => {
                       setIsCreating(false);
                       setEditingMember({
                         ...member,
+                        category: member.category === 'Primary' ? 'Primary' : 'Secondary',
                         qualifications: member.qualifications
                           ? { ...member.qualifications }
                           : { en: '', ta: '' },

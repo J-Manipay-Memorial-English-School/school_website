@@ -108,6 +108,11 @@ export const ContactSection: React.FC = () => {
               className="space-y-2 text-stone-600 dark:text-stone-300 text-base leading-relaxed"
             />
           )}
+          {pickText(data.contact.schoolType, language) && (
+            <p className="mt-3 text-xs sm:text-sm font-semibold tracking-wide text-[var(--brand-primary)] dark:text-[var(--brand-accent)]">
+              {pickText(data.contact.schoolType, language)}
+            </p>
+          )}
         </div>
 
         <div className="space-y-6">

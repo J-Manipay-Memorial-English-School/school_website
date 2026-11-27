@@ -176,10 +176,14 @@ function normalizeSchoolData(parsed: Partial<SchoolData>): SchoolData {
       Array.isArray(parsed.schoolGlimpses) && parsed.schoolGlimpses.length > 0
         ? parsed.schoolGlimpses
         : defaults.schoolGlimpses,
-    staffMembers:
+    staffMembers: (
       Array.isArray(parsed.staffMembers) && parsed.staffMembers.length > 0
         ? parsed.staffMembers
-        : defaults.staffMembers,
+        : defaults.staffMembers
+    ).map((member) => ({
+      ...member,
+      category: member.category === 'Primary' ? ('Primary' as const) : ('Secondary' as const),
+    })),
     formerPrincipals: Array.isArray(parsed.formerPrincipals)
       ? parsed.formerPrincipals
       : defaults.formerPrincipals,

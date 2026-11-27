@@ -38,8 +38,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ta: 'பாரம்பரியத்தில் வேரூன்றி, அறிவில் முன்னேறும் கல்விக்கூடம்',
     },
     subtitle: {
-      en: 'A 1AC provincial school dedicated to academic distinction, bilingual fluency, and compassionate civic leadership across Primary, O/L, and GCE A/L Arts, Commerce, and Technology streams.',
-      ta: 'ஆரம்பக் கல்வி முதல் க.பொ.த. சாதாரண தரம் மற்றும் உயர்தர கலை, வணிகம், தொழில்நுட்பப் பிரிவுகள் வரை அறிவு, ஒழுக்கம் மற்றும் இருமொழித் திறனை வளர்க்கும் 1AC மாகாணப் பாடசாலை.',
+      en: 'A 1C provincial school (Medium of Instruction: Tamil) dedicated to academic distinction, intellectual growth, and compassionate civic leadership across Primary, O/L, and GCE A/L Arts, Commerce, and Technology streams.',
+      ta: 'ஆரம்பக் கல்வி முதல் க.பொ.த. சாதாரண தரம் மற்றும் உயர்தர கலை, வணிகம், தொழில்நுட்பப் பிரிவுகள் வரை தமிழ் மொழி மூலக் கல்வியில் அறிவு, ஒழுக்கம் மற்றும் தலைமைத்துவத்தை வளர்க்கும் 1C மாகாணப் பாடசாலை.',
     },
     bannerUrl: '/src/assets/images/hero_school_campus_1794888811093.jpg',
     primaryCtaLabel: {
@@ -91,8 +91,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ta: 'யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலையில் ஒவ்வொரு மாணவரும் தேடல், ஒழுக்கம் மற்றும் பரஸ்பர மரியாதை நிறைந்த கல்விப் பாரம்பரியத்திற்குள் அடியெடுத்து வைக்கின்றனர். யாழ்ப்பாணத்தின் உயரிய கல்வி விழுமியங்களை நவீன விஞ்ஞான, வணிக மற்றும் தொழில்நுட்பத் திறன்களுடன் இணைப்பதே எமது இலக்காகும்.',
     },
     fullMessage: {
-      en: 'As a 1AC provincial institution at the heart of Manipay, we take pride in nurturing confident bilingual learners from Grade 1 through GCE Advanced Level.\n\nWhether in our newly upgraded Engineering & Bio-Systems Technology laboratories, our Commerce analytics seminars, or our Humanities debating societies, our dedicated academic staff walks closely beside each student. Together with parents, alumni, and the wider Manipay community, we remain steadfast in shaping graduates who excel in national examinations and serve society with integrity.',
-      ta: 'மானிப்பாயின் இதயப்பகுதியில் அமைந்துள்ள 1AC மாகாணப் பாடசாலை என்ற வகையில், தரம் 1 முதல் க.பொ.த. உயர்தரம் வரை தன்னம்பிக்கையுள்ள இருமொழி மாணவர்களை உருவாக்குவதில் நாம் பெருமிதம் கொள்கிறோம்.\n\nநவீனமயப்படுத்தப்பட்ட பொறியியல் மற்றும் உயிர்முறைமைத் தொழில்நுட்ப ஆய்வுகூடங்கள், வணிகக் கருத்தரங்குகள், கலை இலக்கிய மன்றங்கள் என அனைத்திலும் எமது அர்ப்பணிப்புள்ள ஆசிரியர்கள் மாணவர்களை வழிநடத்துகின்றனர். பெற்றோர், பழைய மாணவர்கள் மற்றும் மானிப்பாய் சமூகத்தின் ஒத்துழைப்புடன், தேசியப் பரீட்சைகளில் சிறந்து விளங்கி நேர்மையுடன் சமூகத்திற்கு சேவையாற்றும் தலைமுறையை உருவாக்குவதில் நாம் உறுதியாக உள்ளோம்.',
+      en: 'As a 1C provincial institution at the heart of Manipay delivering education in Tamil medium, we take pride in nurturing confident, thoughtful learners from Grade 1 through GCE Advanced Level.\n\nWhether in our newly upgraded Engineering & Bio-Systems Technology laboratories, our Commerce analytics seminars, or our Humanities debating societies, our dedicated academic staff walks closely beside each student. Together with parents, alumni, and the wider Manipay community, we remain steadfast in shaping graduates who excel in national examinations and serve society with integrity.',
+      ta: 'மானிப்பாயின் இதயப்பகுதியில் அமைந்துள்ள தமிழ் மொழி மூல 1C மாகாணப் பாடசாலை என்ற வகையில், தரம் 1 முதல் க.பொ.த. உயர்தரம் வரை தன்னம்பிக்கையும் திறனும் கொண்ட மாணவர்களை உருவாக்குவதில் நாம் பெருமிதம் கொள்கிறோம்.\n\nநவீனமயப்படுத்தப்பட்ட பொறியியல் மற்றும் உயிர்முறைமைத் தொழில்நுட்ப ஆய்வுகூடங்கள், வணிகக் கருத்தரங்குகள், கலை இலக்கிய மன்றங்கள் என அனைத்திலும் எமது அர்ப்பணிப்புள்ள ஆசிரியர்கள் மாணவர்களை வழிநடத்துகின்றனர். பெற்றோர், பழைய மாணவர்கள் மற்றும் மானிப்பாய் சமூகத்தின் ஒத்துழைப்புடன், தேசியப் பரீட்சைகளில் சிறந்து விளங்கி நேர்மையுடன் சமூகத்திற்கு சேவையாற்றும் தலைமுறையை உருவாக்குவதில் நாம் உறுதியாக உள்ளோம்.',
     },
   },
   heritage: {
@@ -102,12 +102,12 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ta: 'மானிப்பாய் கல்விச் சங்கம் மற்றும் ஊர்ப் பெரியார்கள்',
     },
     history: {
-      en: 'Established in 1924 along Memorial Lane in Manipay, J/Manipay Memorial English School was founded by visionary local educators and community benefactors to offer rigorous English-medium and bilingual education rooted in Northern Sri Lankan heritage. Over a century of growth, the school expanded from a modest limestone pavilion into a recognized 1AC provincial institution serving generations of scholars, engineers, educators, and public servants across Jaffna and beyond.',
-      ta: '1924 ஆம் ஆண்டில் மானிப்பாய் மெமோரியல் லேன் வீதியில் ஊரின் தொலைநோக்குள்ள கல்வியியலாளர்களாலும் நலன்விரும்பிகளாலும் யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலை ஸ்தாபிக்கப்பட்டது. ஒரு சிறிய சுண்ணாம்புக் கட்டடத்தில் ஆரம்பமான இப்பாடசாலை, ஒரு நூற்றாண்டு கால வளர்ச்சியில் யாழ்ப்பாணத்திற்கும் நாட்டிற்கும் பல அறிஞர்கள், பொறியியலாளர்கள், ஆசிரியர்கள் மற்றும் சமூகத் தலைவர்களை வழங்கிய 1AC மாகாணப் பாடசாலையாக உயர்ந்துள்ளது.',
+      en: 'Established in 1924 along Memorial Lane in Manipay, J/Manipay Memorial English School was founded by visionary local educators and community benefactors to deliver rigorous education rooted in Northern Sri Lankan heritage. Over a century of growth, the school expanded from a modest limestone pavilion into a recognized 1C Tamil-medium provincial institution serving generations of scholars, engineers, educators, and public servants across Jaffna and beyond.',
+      ta: '1924 ஆம் ஆண்டில் மானிப்பாய் மெமோரியல் லேன் வீதியில் ஊரின் தொலைநோக்குள்ள கல்வியியலாளர்களாலும் நலன்விரும்பிகளாலும் யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலை ஸ்தாபிக்கப்பட்டது. ஒரு சிறிய சுண்ணாம்புக் கட்டடத்தில் ஆரம்பமான இப்பாடசாலை, ஒரு நூற்றாண்டு கால வளர்ச்சியில் யாழ்ப்பாணத்திற்கும் நாட்டிற்கும் பல அறிஞர்கள், பொறியியலாளர்கள், ஆசிரியர்கள் மற்றும் சமூகத் தலைவர்களை வழங்கிய தமிழ் மொழி மூல 1C மாகாணப் பாடசாலையாக உயர்ந்துள்ளது.',
     },
     vision: {
-      en: 'To be a beacon of holistic, bilingual 1AC education in the Jaffna Peninsula—empowering ethical, intellectually curious, and future-ready citizens.',
-      ta: 'யாழ்ப்பாணக் குடாநாட்டில் ஒழுக்கமும் அறிவுத் தேடலும் எதிர்காலத் தயார்நிலையும் கொண்ட இருமொழி மாணவர்களை உருவாக்கும் முன்மாதிரி 1AC கல்வி நிறுவனமாகத் திகழ்தல்.',
+      en: 'To be a beacon of holistic, Tamil-medium 1C education in the Jaffna Peninsula—empowering ethical, intellectually curious, and future-ready citizens.',
+      ta: 'யாழ்ப்பாணக் குடாநாட்டில் ஒழுக்கமும் அறிவுத் தேடலும் எதிர்காலத் தயார்நிலையும் கொண்ட மாணவர்களை தமிழ் மொழி மூலம் உருவாக்கும் முன்மாதிரி 1C கல்வி நிறுவனமாகத் திகழ்தல்.',
     },
     mission: {
       en: 'To deliver inclusive, learner-centered instruction across Primary, Secondary, and GCE A/L Arts, Commerce, and Technology streams while cultivating character, sportsmanship, cultural pride, and community service.',
@@ -140,8 +140,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
   },
   academicsConfig: {
     kicker: {
-      en: '1AC Provincial Curriculum',
-      ta: '1AC மாகாணக் கலைத்திட்டம்',
+      en: '1C Provincial Curriculum · Medium of Instruction: Tamil',
+      ta: '1C மாகாணக் கலைத்திட்டம் · மொழி மூலம்: தமிழ்',
     },
     heading: {
       en: 'Academic Pathways & Streams',
@@ -203,16 +203,16 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         ta: 'தரம் 1 முதல் 5 வரை · புலமைப்பரிசில் வழிகாட்டல்',
       },
       overview: {
-        en: 'Activity-based bilingual foundation focusing on Tamil and English literacy, foundational numeracy, environmental exploration, and Grade 5 Scholarship readiness.',
-        ta: 'தமிழ் மற்றும் ஆங்கில மொழித் தேர்ச்சி, அடிப்படைக் கணிதம், சுற்றாடல் கல்வி மற்றும் தரம் 5 புலமைப்பரிசில் பரீட்சைக்கான செயற்பாட்டு வழி அடித்தளம்.',
+        en: 'Activity-based Tamil-medium foundation focusing on Tamil first-language literacy, English as a core language subject, foundational numeracy, environmental exploration, and Grade 5 Scholarship readiness.',
+        ta: 'தமிழ் மொழி மூல செயற்பாட்டு வழி ஆரம்பக் கல்வி — தமிழ் மொழித் தேர்ச்சி, ஆங்கிலம், அடிப்படைக் கணிதம், சுற்றாடல் கல்வி மற்றும் தரம் 5 புலமைப்பரிசில் வழிகாட்டல்.',
       },
       subjects: {
         en: ['First Language (Tamil)', 'English Language', 'Mathematics', 'Environmental Studies (ERA)', 'Religion & Values', 'Creative Arts & Rhythm'],
         ta: ['தமிழ் மொழி', 'ஆங்கிலம்', 'கணிதம்', 'சுற்றாடல் சார்ந்த செயற்பாடுகள்', 'சமயம் மற்றும் விழுமியம்', 'ஆக்கக் கலைகள்'],
       },
       pathways: {
-        en: 'Smooth transition into Junior Secondary with strong bilingual reading fluency and analytical habits.',
-        ta: 'இருமொழி வாசிப்புத் திறன் மற்றும் பகுப்பாய்வுப் பழக்கத்துடன் கனிஷ்ட இடைநிலைப் பிரிவிற்குள் சிறந்த பிரவேசம்.',
+        en: 'Smooth transition into Junior Secondary with strong Tamil literacy, foundational English skills, and analytical habits.',
+        ta: 'வலுவான தமிழ் மொழி ஆளுமை, ஆங்கில அறிவு மற்றும் பகுப்பாய்வுப் பழக்கத்துடன் கனிஷ்ட இடைநிலைப் பிரிவிற்குள் சிறந்த பிரவேசம்.',
       },
     },
     {
@@ -230,16 +230,16 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         ta: 'தரம் 6 முதல் 11 வரை · தேசிய க.பொ.த. சாதாரண தரப் பாடத்திட்டம்',
       },
       overview: {
-        en: 'Comprehensive secondary education preparing students for the GCE Ordinary Level Examination with hands-on science laboratories, ICT coding workshops, and aesthetic appreciation.',
-        ta: 'விஞ்ஞான ஆய்வுகூடப் பயிற்சிகள், தகவல் தொழில்நுட்பம் மற்றும் அழகியல் பாடங்களுடன் க.பொ.த. சாதாரண தரப் பரீட்சைக்கு மாணவர்களைத் தயார்படுத்தும் முழுமையான இடைநிலைக் கல்வி.',
+        en: 'Comprehensive Tamil-medium secondary education preparing students for the GCE Ordinary Level Examination with hands-on science laboratories, ICT coding workshops, and aesthetic appreciation.',
+        ta: 'விஞ்ஞான ஆய்வுகூடப் பயிற்சிகள், தகவல் தொழில்நுட்பம் மற்றும் அழகியல் பாடங்களுடன் க.பொ.த. சாதாரண தரப் பரீட்சைக்கு மாணவர்களை தமிழ் மொழி மூலம் தயார்படுத்தும் முழுமையான இடைநிலைக் கல்வி.',
       },
       subjects: {
         en: ['Tamil & English Languages', 'Mathematics & Science', 'History & Civic Education', 'Information & Communication Technology (ICT)', 'Commerce & Accounting Basics', 'Carnatic Music / Bharatanatyam / Art'],
         ta: ['தமிழ் மற்றும் ஆங்கில மொழிகள்', 'கணிதம் மற்றும் விஞ்ஞானம்', 'வரலாறு மற்றும் குடியியல் கல்வி', 'தகவல் தொடர்பாடல் தொழில்நுட்பம் (ICT)', 'வணிகம் மற்றும் கணக்கியல் அடிப்படைகள்', 'சங்கீதம் / நடனம் / சித்திரம்'],
       },
       pathways: {
-        en: 'Qualifies graduates to enter our 1AC GCE Advanced Level Arts, Commerce, or Technology streams.',
-        ta: 'எமது 1AC க.பொ.த. உயர்தர கலை, வணிகம் அல்லது தொழில்நுட்பப் பிரிவுகளில் இணைவதற்கான தகுதியை வழங்குகிறது.',
+        en: 'Qualifies graduates to enter our 1C GCE Advanced Level Arts, Commerce, or Technology streams.',
+        ta: 'எமது 1C க.பொ.த. உயர்தர கலை, வணிகம் அல்லது தொழில்நுட்பப் பிரிவுகளில் இணைவதற்கான தகுதியை வழங்குகிறது.',
       },
     },
     {
@@ -311,8 +311,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         ta: 'தரம் 12 முதல் 13 வரை · பொறியியல் மற்றும் உயிர்முறைமைத் தொழில்நுட்பம்',
       },
       overview: {
-        en: 'A flagship 1AC practical stream combining Science for Technology with dedicated Engineering Technology and Bio-Systems Technology workshop labs.',
-        ta: 'தொழில்நுட்பத்திற்கான விஞ்ஞானத்துடன் பொறியியல் தொழில்நுட்பம் மற்றும் உயிர்முறைமைத் தொழில்நுட்ப செய்முறை ஆய்வுகூடங்களை இணைத்த முதன்மை 1AC பிரிவு.',
+        en: 'A flagship 1C practical stream combining Science for Technology with dedicated Engineering Technology and Bio-Systems Technology workshop labs in Tamil medium.',
+        ta: 'தொழில்நுட்பத்திற்கான விஞ்ஞானத்துடன் பொறியியல் தொழில்நுட்பம் மற்றும் உயிர்முறைமைத் தொழில்நுட்ப செய்முறை ஆய்வுகூடங்களை தமிழ் மொழி மூலம் இணைத்த முதன்மை 1C பிரிவு.',
       },
       subjects: {
         en: ['Engineering Technology (ET)', 'Bio-Systems Technology (BST)', 'Science for Technology (SFT)', 'Information & Communication Technology (ICT)', 'Agro-Technology Workshop', 'General English'],
@@ -593,7 +593,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         en: 'B.Tech (Hons), PGDE · Senior Graduate Teacher',
         ta: 'B.Tech (Hons), PGDE · சிரேஷ்ட பட்டதாரி ஆசிரியர்',
       },
-      category: 'GCE A/L',
+      category: 'Secondary',
       photoUrl: '/src/assets/images/teacher_portrait_female_1794893323895.jpg',
     },
     {
@@ -610,7 +610,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         en: 'B.Sc. (Jaffna), M.Ed. · SLTS Class I',
         ta: 'B.Sc. (யாழ்ப்பாணம்), M.Ed. · இலங்கை ஆசிரியர் சேவை I',
       },
-      category: 'GCE A/L',
+      category: 'Secondary',
       photoUrl: '/src/assets/images/teacher_portrait_male_1794893324665.jpg',
     },
     {
@@ -627,7 +627,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         en: 'B.B.A. (Hons), ACMA, PGDE',
         ta: 'B.B.A. (Hons), ACMA, PGDE',
       },
-      category: 'GCE A/L',
+      category: 'Secondary',
       photoUrl: '',
     },
     {
@@ -694,7 +694,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         ta: '1958 – 1974',
       },
       note: {
-        en: 'B.A. (London), Trained Teacher · Oversaw the expansion of the secondary bilingual wing and science library.',
+        en: 'B.A. (London), Trained Teacher · Oversaw the expansion of the secondary wing and science library.',
         ta: 'B.A. (இலண்டன்), பயிற்றுவிக்கப்பட்ட ஆசிரியர் · இடைநிலைப் பிரிவு மற்றும் விஞ்ஞான நூலக விரிவாக்கத்திற்கு வழிகாட்டியவர்.',
       },
       photoUrl: '',
@@ -742,8 +742,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         ta: '2004 – 2021',
       },
       note: {
-        en: 'B.Sc. (Hons), M.Ed., SLPS Class I · Pioneered the 1AC Technology Wing and digital learning facilities.',
-        ta: 'B.Sc. (Hons), M.Ed., இலங்கை அதிபர் சேவை I · 1AC தொழில்நுட்பப் பிரிவையும் எண்ணிமக் கற்றல் வசதிகளையும் உருவாக்கியவர்.',
+        en: 'B.Sc. (Hons), M.Ed., SLPS Class I · Pioneered the 1C Technology Wing and digital learning facilities.',
+        ta: 'B.Sc. (Hons), M.Ed., இலங்கை அதிபர் சேவை I · 1C தொழில்நுட்பப் பிரிவையும் எண்ணிமக் கற்றல் வசதிகளையும் உருவாக்கியவர்.',
       },
       photoUrl: '',
     },
@@ -967,8 +967,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
       ta: 'திங்கள் – வெள்ளி · காலை 7.30 – பிற்பகல் 2.30',
     },
     schoolType: {
-      en: '1AC Provincial School · Mixed · Bilingual (Tamil & English)',
-      ta: '1AC மாகாணப் பாடசாலை · இருபாலர் · தமிழ் மற்றும் ஆங்கில மொழி',
+      en: '1C Provincial School · Mixed · Medium of Instruction: Tamil',
+      ta: '1C மாகாணப் பாடசாலை · இருபாலர் · மொழி மூலம்: தமிழ்',
     },
     mapEmbedUrl:
       'https://maps.google.com/maps?q=Manipay,+Jaffna,+Sri+Lanka&t=&z=15&ie=UTF8&iwloc=&output=embed',
@@ -1032,8 +1032,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
   },
   footer: {
     description: {
-      en: 'A 1AC provincial school nurturing bilingual scholarship, ethical leadership, and community service in Manipay, Jaffna.',
-      ta: 'யாழ்ப்பாணம் மானிப்பாயில் இருமொழிக் கல்வி, ஒழுக்க தலைமைத்துவம் மற்றும் சமூக சேவையை வளர்க்கும் 1AC மாகாணப் பாடசாலை.',
+      en: 'A 1C provincial school (Medium of Instruction: Tamil) nurturing scholarship, ethical leadership, and community service in Manipay, Jaffna.',
+      ta: 'யாழ்ப்பாணம் மானிப்பாயில் தமிழ் மொழி மூலக் கல்வி, ஒழுக்க தலைமைத்துவம் மற்றும் சமூக சேவையை வளர்க்கும் 1C மாகாணப் பாடசாலை.',
     },
     showSocialLinks: true,
     columns: [
@@ -1094,8 +1094,8 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
           {
             id: 'fi-type',
             label: {
-              en: '1AC Provincial School · Mixed · Bilingual (Tamil & English)',
-              ta: '1AC மாகாணப் பாடசாலை · இருபாலர் · தமிழ் மற்றும் ஆங்கில மொழி',
+              en: '1C Provincial School · Mixed · Medium of Instruction: Tamil',
+              ta: '1C மாகாணப் பாடசாலை · இருபாலர் · மொழி மூலம்: தமிழ்',
             },
             linkType: 'text',
           },

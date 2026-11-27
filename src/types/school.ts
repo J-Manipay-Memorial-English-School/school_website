@@ -122,7 +122,7 @@ export interface SchoolGlimpse {
   date?: string;
 }
 
-export type StaffSectionCategory = 'Primary' | 'Secondary' | 'GCE A/L';
+export type StaffSectionCategory = 'Primary' | 'Secondary';
 
 export interface StaffMember {
   id: string;

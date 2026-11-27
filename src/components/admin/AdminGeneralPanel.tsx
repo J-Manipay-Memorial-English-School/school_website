@@ -400,7 +400,7 @@ export const AdminGeneralPanel: React.FC = () => {
               type="text"
               value={schoolType.en}
               onChange={(e) => setSchoolType({ ...schoolType, en: e.target.value })}
-              placeholder="e.g., 1AC Provincial School · Mixed · Bilingual"
+              placeholder="e.g., 1C Provincial School · Mixed · Medium of Instruction: Tamil"
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
           </div>
@@ -412,7 +412,7 @@ export const AdminGeneralPanel: React.FC = () => {
               type="text"
               value={schoolType.ta}
               onChange={(e) => setSchoolType({ ...schoolType, ta: e.target.value })}
-              placeholder="உ-ம்: 1AC மாகாணப் பாடசாலை · இருபாலர் · தமிழ் மற்றும் ஆங்கில மொழி"
+              placeholder="உ-ம்: 1C மாகாணப் பாடசாலை · இருபாலர் · மொழி மூலம்: தமிழ்"
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
           </div>

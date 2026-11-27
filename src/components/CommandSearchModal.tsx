@@ -122,7 +122,7 @@ export const CommandSearchModal: React.FC<CommandSearchModalProps> = ({
           id: `res-${member.id}`,
           group: strings.nav.staff,
           title: pickText(member.name, language),
-          subtitle: `${strings.staff.filters[member.category]} · ${pickText(member.role, language)}`,
+          subtitle: `${strings.staff.filters[member.category] || strings.staff.filters.Secondary} · ${pickText(member.role, language)}`,
           icon: 'staff',
           action: () => {
             onClose();

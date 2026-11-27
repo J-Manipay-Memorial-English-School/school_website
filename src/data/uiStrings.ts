@@ -101,7 +101,6 @@ export const UI_STRINGS: Record<Language, {
       All: string;
       Primary: string;
       Secondary: string;
-      'GCE A/L': string;
     };
     emptyState: string;
   };
@@ -240,14 +239,14 @@ export const UI_STRINGS: Record<Language, {
       exploreAcademics: 'Explore Academics',
       contactLocation: 'Contact & Location',
       mottoLabel: 'School Motto',
-      classification: '1AC Provincial School · Jaffna Education Zone',
+      classification: '1C Provincial School · Mixed · Medium of Instruction: Tamil',
     },
     stats: {
       students: 'Active Students',
       academicStaff: 'Academic Staff',
       nonAcademicStaff: 'Non-Academic Staff',
       prefects: 'Student Prefects',
-      studentsSub: 'Grades 1 to 13 across 1AC streams',
+      studentsSub: 'Grades 1 to 13 across 1C streams',
       academicStaffSub: 'Graduate & trained specialist educators',
       nonAcademicStaffSub: 'Administrative & school support',
       prefectsSub: 'Senior & junior student leadership',
@@ -288,7 +287,7 @@ export const UI_STRINGS: Record<Language, {
       stanzaPrefix: 'Stanza',
     },
     academics: {
-      kicker: '1AC Provincial Curriculum',
+      kicker: '1C Provincial Curriculum · Tamil Medium',
       heading: 'Academic Pathways & Streams',
       subtitle: 'Structured progression from foundational primary literacy to GCE Advanced Level specialization in Arts, Commerce, and Technology.',
       filters: {
@@ -303,14 +302,13 @@ export const UI_STRINGS: Record<Language, {
     staff: {
       kicker: 'Leadership & Faculty',
       heading: 'Principal & Academic Staff',
-      subtitle: 'Meet the dedicated educators guiding Primary, Secondary, and GCE Advanced Level scholars at J/Manipay Memorial English School.',
+      subtitle: 'Meet the dedicated educators guiding Primary and Secondary scholars at J/Manipay Memorial English School.',
       principalRoleLabel: 'School Leadership · Principal',
       teachersHeading: 'Academic Faculty Directory',
       filters: {
         All: 'All Faculty',
         Primary: 'Primary',
         Secondary: 'Secondary',
-        'GCE A/L': 'GCE A/L',
       },
       emptyState: 'No staff profiles found in this section.',
     },
@@ -411,7 +409,7 @@ export const UI_STRINGS: Record<Language, {
       validationError: 'Please fill in your name, email address, and message.',
     },
     footer: {
-      description: 'A 1AC provincial school nurturing bilingual scholarship, ethical leadership, and community service in Manipay, Jaffna.',
+      description: 'A 1C provincial school (Medium of Instruction: Tamil) nurturing scholarship, ethical leadership, and community service in Manipay, Jaffna.',
       quickLinks: 'Navigation',
       schoolInfo: 'School Details',
       adminPortal: 'Admin Portal',
@@ -449,14 +447,14 @@ export const UI_STRINGS: Record<Language, {
       exploreAcademics: 'கல்விப் பிரிவுகளைப் பார்க்க',
       contactLocation: 'தொடர்பு மற்றும் அமைவிடம்',
       mottoLabel: 'பாடசாலை மகுட வாசகம்',
-      classification: '1AC மாகாணப் பாடசாலை · யாழ்ப்பாண கல்வி வலயம்',
+      classification: '1C மாகாணப் பாடசாலை · இருபாலர் · மொழி மூலம்: தமிழ்',
     },
     stats: {
       students: 'மாணவர்கள்',
       academicStaff: 'கல்விசார் ஊழியர்கள்',
       nonAcademicStaff: 'கல்விசாரா ஊழியர்கள்',
       prefects: 'மாணவத் தலைவர்கள்',
-      studentsSub: 'தரம் 1 முதல் 13 வரை 1AC பிரிவுகளில்',
+      studentsSub: 'தரம் 1 முதல் 13 வரை 1C பிரிவுகளில்',
       academicStaffSub: 'பட்டதாரி மற்றும் பயிற்றுவிக்கப்பட்ட ஆசிரியர்கள்',
       nonAcademicStaffSub: 'நிர்வாக மற்றும் பாடசாலை உதவிப் பணியாளர்கள்',
       prefectsSub: 'சிரேஷ்ட மற்றும் கனிஷ்ட மாணவத் தலைமைத்துவம்',
@@ -497,7 +495,7 @@ export const UI_STRINGS: Record<Language, {
       stanzaPrefix: 'சரணம்',
     },
     academics: {
-      kicker: '1AC மாகாணக் கலைத்திட்டம்',
+      kicker: '1C மாகாணக் கலைத்திட்டம் · தமிழ் மொழி மூலம்',
       heading: 'கல்விப் பாதைகளும் பிரிவுகளும்',
       subtitle: 'ஆரம்பக் கல்வி முதல் க.பொ.த. உயர்தர கலை, வணிகம் மற்றும் தொழில்நுட்பப் பிரிவுகள் வரையிலான திட்டமிட்ட கல்வி.',
       filters: {
@@ -512,14 +510,13 @@ export const UI_STRINGS: Record<Language, {
     staff: {
       kicker: 'தலைமைத்துவமும் ஆசிரியர் குழாமும்',
       heading: 'அதிபர் மற்றும் கல்விசார் ஆசிரியர்கள்',
-      subtitle: 'யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலையின் ஆரம்ப, இடைநிலை மற்றும் உயர்தர மாணவர்களை வழிநடத்தும் அர்ப்பணிப்புள்ள ஆசிரியர் குழாம்.',
+      subtitle: 'யா/மானிப்பாய் மெமோரியல் ஆங்கிலப் பாடசாலையின் ஆரம்ப மற்றும் இடைநிலை மாணவர்களை வழிநடத்தும் அர்ப்பணிப்புள்ள ஆசிரியர் குழாம்.',
       principalRoleLabel: 'பாடசாலைத் தலைமைத்துவம் · அதிபர்',
       teachersHeading: 'கல்விசார் ஆசிரியர் விபரம்',
       filters: {
         All: 'அனைவரும்',
         Primary: 'ஆரம்பப் பிரிவு',
         Secondary: 'இடைநிலை',
-        'GCE A/L': 'க.பொ.த. உயர்தரம்',
       },
       emptyState: 'இப்பிரிவில் ஆசிரியர் விபரங்கள் எதுவும் இல்லை.',
     },
@@ -620,7 +617,7 @@ export const UI_STRINGS: Record<Language, {
       validationError: 'தயவுசெய்து உங்கள் பெயர், மின்னஞ்சல் மற்றும் செய்தியை உள்ளிடவும்.',
     },
     footer: {
-      description: 'யாழ்ப்பாணம் மானிப்பாயில் இருமொழிக் கல்வி, ஒழுக்க தலைமைத்துவம் மற்றும் சமூக சேவையை வளர்க்கும் 1AC மாகாணப் பாடசாலை.',
+      description: 'யாழ்ப்பாணம் மானிப்பாயில் தமிழ் மொழி மூலக் கல்வி, ஒழுக்க தலைமைத்துவம் மற்றும் சமூக சேவையை வளர்க்கும் 1C மாகாணப் பாடசாலை.',
       quickLinks: 'பிரிவுகள்',
       schoolInfo: 'பாடசாலைத் தகவல்கள்',
       adminPortal: 'நிர்வாகப் பக்கம்',

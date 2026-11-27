@@ -17,7 +17,7 @@ export const StaffSection: React.FC = () => {
     return data.staffMembers.filter((member) => member.category === filter);
   }, [data.staffMembers, filter]);
 
-  const filterOptions: StaffFilter[] = ['All', 'Primary', 'Secondary', 'GCE A/L'];
+  const filterOptions: StaffFilter[] = ['All', 'Primary', 'Secondary'];
   const principalName = pickText(data.principal.name, language);
 
   return (
@@ -141,7 +141,7 @@ export const StaffSection: React.FC = () => {
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-semibold text-[var(--brand-primary)] dark:text-[var(--brand-accent)] mb-1 flex items-center gap-1.5">
                       <User className="w-3 h-3 shrink-0" aria-hidden="true" />
-                      <span>{strings.staff.filters[teacher.category]}</span>
+                      <span>{strings.staff.filters[teacher.category] || strings.staff.filters.Secondary}</span>
                     </div>
 
                     <h4 className="font-display text-lg font-semibold text-stone-900 dark:text-stone-50 leading-snug mb-1">

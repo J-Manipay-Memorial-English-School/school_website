@@ -398,6 +398,7 @@ export const AdminContactPanel: React.FC = () => {
               type="text"
               value={schoolType.en}
               onChange={(e) => setSchoolType({ ...schoolType, en: e.target.value })}
+              placeholder="e.g., 1C Provincial School · Mixed · Medium of Instruction: Tamil"
               className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950"
             />
           </div>
@@ -409,6 +410,7 @@ export const AdminContactPanel: React.FC = () => {
               type="text"
               value={schoolType.ta}
               onChange={(e) => setSchoolType({ ...schoolType, ta: e.target.value })}
+              placeholder="உ-ம்: 1C மாகாணப் பாடசாலை · இருபாலர் · மொழி மூலம்: தமிழ்"
               className="w-full px-3 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950"
             />
           </div>
