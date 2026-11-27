@@ -958,7 +958,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
     },
     address: {
       en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
-      ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
+      ta: 'மெமோறியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
     },
     phone: '+94 21 225 5412',
     email: 'office@manipaymemorial.sch.lk',
@@ -986,7 +986,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
         },
         value: {
           en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
-          ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
+          ta: 'மெமோறியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
         },
       },
       {
@@ -1069,7 +1069,7 @@ export const DEFAULT_SCHOOL_DATA: SchoolData = {
             id: 'fi-addr',
             label: {
               en: 'Memorial Lane, Manipay, Jaffna 40000, Sri Lanka',
-              ta: 'மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
+              ta: 'மெமோறியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை',
             },
             linkType: 'text',
           },

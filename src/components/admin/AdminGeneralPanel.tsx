@@ -385,7 +385,7 @@ export const AdminGeneralPanel: React.FC = () => {
               rows={2}
               value={primaryAddress.ta}
               onChange={(e) => setPrimaryAddress({ ...primaryAddress, ta: e.target.value })}
-              placeholder="மெமோரியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை"
+              placeholder="மெமோறியல் லேன், மானிப்பாய், யாழ்ப்பாணம் 40000, இலங்கை"
               className="w-full px-3.5 py-2 rounded-lg text-sm border border-stone-200 dark:border-stone-700 bg-[#FBF9F5] dark:bg-stone-950 text-stone-900 dark:text-stone-100"
             />
           </div>
